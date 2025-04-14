@@ -1,5 +1,10 @@
 import { toast } from "react-toastify";
-import { getRequest, deleteRequest, postRequest, putRequest } from "../../utils/api";
+import {
+  deleteRequest,
+  getRequest,
+  postRequest,
+  putRequest,
+} from "../../utils/api";
 
 export const fetchExams = (token) => async (dispatch) => {
   dispatch({ type: "FETCH_EXAMS_REQUEST" });
@@ -44,6 +49,8 @@ export const deleteExam = (id, token) => async (dispatch) => {
 };
 
 export const createExam = (examData, token, navigate) => async (dispatch) => {
+  console.log(token);
+
   dispatch({ type: "CREATE_EXAM_REQUEST" });
   try {
     const response = await postRequest("dashboard/Teachers/Exam", {
@@ -54,7 +61,6 @@ export const createExam = (examData, token, navigate) => async (dispatch) => {
     });
     if (response?.statusCode === 200) {
       dispatch({ type: "CREATE_EXAM_SUCCESS", payload: response.data });
-      // toast.success(response?.message);
       navigate(-1);
     } else {
       dispatch({ type: "CREATE_EXAM_FAILURE", payload: response.message });

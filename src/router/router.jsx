@@ -15,16 +15,14 @@ import AllStudent from "../components/Teacher/AllStudent";
 import ExamDetail from "../components/Teacher/ExamDetail";
 import ExamList from "../components/Teacher/ExamList";
 import StudentDetails from "../components/Teacher/StudentDetails";
-import TeacherForm from "../components/Teacher/TeacherForm";
+// import TeacherForm from "../components/Teacher/TeacherForm";
 import NewForm from "../components/Teacher/NewForm";
 
 const router = createBrowserRouter(
   [
     {
       path: "/",
-      element: (
-        <Home />
-      ),
+      element: <Home />,
       children: [
         {
           path: "dashboard",
@@ -35,13 +33,12 @@ const router = createBrowserRouter(
           element: (
             // <TeacherForm />
             <NewForm />
+            // <TeacherForm2 />
           ),
         },
         {
           path: "students",
-          element: (
-            <AllStudent />
-          ),
+          element: <AllStudent />,
         },
         {
           path: "student/:id",
@@ -49,20 +46,17 @@ const router = createBrowserRouter(
         },
         {
           path: "exams",
-          element: (
-            <ExamList />
-          ),
+          element: <ExamList />,
         },
         {
           path: "exam/:id",
-          element: (
-            <ExamDetail />
-          ),
+          element: <ExamDetail />,
         },
         {
           path: "updateExam/:id",
           element: (
-            <TeacherForm />
+            // <TeacherForm />
+            <NewForm />
           ),
         },
         {
@@ -71,9 +65,7 @@ const router = createBrowserRouter(
           children: [
             {
               path: "editName",
-              element: (
-                <EditProfile />
-              ),
+              element: <EditProfile />,
             },
             {
               path: "resetPassword",
@@ -83,41 +75,29 @@ const router = createBrowserRouter(
         },
         {
           path: "examForm",
-          element: (
-            <ExamForm />
-          ),
+          element: <ExamForm />,
         },
         {
           path: "result",
-          element: (
-            <StudentResult />
-          ),
+          element: <StudentResult />,
         },
       ],
     },
     {
       path: "/signup",
-      element: (
-        <SignUp />
-      ),
+      element: <SignUp />,
     },
     {
       path: "/login",
-      element: (
-        <Login />
-      ),
+      element: <Login />,
     },
     {
       path: "/forgetPassword",
-      element: (
-        <ForgetPassword />
-      ),
+      element: <ForgetPassword />,
     },
     {
       path: "/newPassword",
-      element: (
-        <NewPassword />
-      ),
+      element: <NewPassword />,
     },
     {
       path: "*",

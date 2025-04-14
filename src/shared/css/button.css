@@ -9,6 +9,7 @@ button:hover {
   padding: 0.6em 2em;
   font-size: 1em;
   background: #1a1a1a;
+  margin: 10px 20px 10px 0px;
   cursor: pointer;
   color: var(--button-color);
   transition: all 0.3s ease-in-out;

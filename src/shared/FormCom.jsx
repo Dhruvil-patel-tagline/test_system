@@ -1,5 +1,7 @@
-
-import { Fragment, useState } from "react";
+import { Fragment, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
+import { resetForm } from "../redux/action/resetForm";
 import { dropObj } from "../utils/staticObj";
 import validate from "../utils/validate";
 import ButtonCom from "./ButtonCom";
@@ -13,108 +15,57 @@ const FormCom = ({
   initialValues,
   onSubmit,
   buttonText = "Submit",
-  secondaryButton = null,
+  resetButton,
   customValidation = null,
 }) => {
-  const [formData, setFormData] = useState(initialValues || {});
-  const [errors, setErrors] = useState({});
+  const { formData, errors } = useSelector((state) => state.formData);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch({ type: "SET_DATA", payload: initialValues });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialValues]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-    const trimmedValue = value && typeof value === 'string' ? value.trim() : value;
-    setFormData(prev => ({ ...prev, [name]: trimmedValue }));
-    const field = fields.find(f => f.id === name);
-
-    setErrors(prev => {
-      const newErrors = { ...prev };
-      delete newErrors[name];
-      return newErrors;
-    });
-
+    const trimmedValue =
+      value && typeof value === "string" ? value.trim() : value;
+    dispatch({ type: "SET_DATA", payload: { [name]: trimmedValue } });
+    const field = fields.find((f) => f.id === name);
 
     if (field) {
       let error = null;
       if (field.validate) {
         error = field.validate(trimmedValue, formData);
       } else {
-
-        switch (field.input) {
-          case "input":
-          case "password":
-            error = validate(field.id, trimmedValue);
-            break;
-          case "radio":
-            error = !trimmedValue ? `${field.name} is required` : null;
-            break;
-          case "dropdown":
-            error = !trimmedValue ? `Please select ${field.name}` : null;
-            break;
-          default:
-            error = null;
-        }
+        error =
+          field.id === "confirmPassword"
+            ? validate(field.id, trimmedValue, formData.password)
+            : validate(field.id, trimmedValue);
       }
-
-      if (error) {
-        setErrors(prev => ({ ...prev, [name]: error }));
-      }
+      dispatch({ type: "SET_ERROR", payload: { [name]: error } });
     }
   };
 
   const validateField = (field, value) => {
     if (field.validate) {
       return field.validate(value, formData);
+    } else if (field.id === "confirmPassword") {
+      return validate(field.id, value, formData.password);
+    } else {
+      return validate(field.id, value);
     }
-    switch (field.input) {
-      case "input":
-      case "password":
-        return validate(field.id, value);
-      case "radio":
-        return !value ? `${field.name} is required` : null;
-      case "dropdown":
-        return !value ? `Please select ${field.name}` : null;
-      default:
-        return null;
-    }
-  };
-
-  const validateForm = () => {
-    const newErrors = {};
-    let isValid = true;
-
-    fields.forEach(field => {
-      const value = formData[field.id];
-      const error = validateField(field, value);
-      if (error) {
-        newErrors[field.id] = error;
-        isValid = false;
-      }
-    });
-
-    if (customValidation) {
-      const customErrors = customValidation(formData);
-      if (customErrors) {
-        Object.assign(newErrors, customErrors);
-        isValid = isValid && Object.keys(customErrors).length === 0;
-      }
-    }
-
-    setErrors(newErrors);
-    return isValid;
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-
     const newErrors = {};
     let isValid = true;
 
-    fields.forEach(field => {
-
-      const value = field.value !== undefined ? field.value : formData[field.id];
-
-
+    fields.forEach((field) => {
+      const value =
+        field.value !== undefined ? field.value : formData[field.id];
       if (field.validate) {
         const error = field.validate(value, formData);
         if (error) {
@@ -122,7 +73,6 @@ const FormCom = ({
           isValid = false;
         }
       } else {
-
         const error = validateField(field, value);
         if (error) {
           newErrors[field.id] = error;
@@ -131,7 +81,6 @@ const FormCom = ({
       }
     });
 
-
     if (customValidation) {
       const customErrors = customValidation(formData);
       if (customErrors && Object.keys(customErrors).length > 0) {
@@ -139,19 +88,19 @@ const FormCom = ({
         isValid = false;
       }
     }
-
-    setErrors(newErrors);
+    dispatch({ type: "REPLACE_ERROR", payload: newErrors });
 
     if (isValid) {
-      onSubmit(formData, setFormData, setErrors);
+      onSubmit(formData);
+      dispatch(resetForm());
+    } else {
+      toast.error("Please fill out all the Details");
     }
   };
 
   const renderField = (field) => {
-    const inputId = `form-field-${field.id}`;
-
-    const fieldError = field.error !== undefined ? field.error : errors[field.id];
-    const fieldValue = field.value !== undefined ? field.value : (formData[field.id] || "");
+    const fieldValue =
+      field.value !== undefined ? field.value : formData[field.id] || "";
 
     switch (field.input) {
       case "input":
@@ -159,11 +108,10 @@ const FormCom = ({
           <div className="form-field">
             <InputCom
               type={field.type}
-              id={inputId}
+              id={field.id}
               name={field.id}
               value={fieldValue}
               onChange={(e) => {
-
                 if (field.onChange) {
                   field.onChange(e);
                 } else {
@@ -172,44 +120,41 @@ const FormCom = ({
               }}
               placeholder={field.placeholder}
             />
-            {fieldError && <span className="error" style={{ color: 'red', display: 'block', marginTop: '5px' }}>{fieldError}</span>}
           </div>
         );
       case "password":
         return (
           <div className="form-field">
             <InputPassword
-              id={inputId}
+              id={field.id}
               name={field.id}
               value={fieldValue}
               onChange={field.onChange || handleChange}
               placeholder={field.placeholder}
             />
-            {fieldError && <span className="error" style={{ color: 'red', display: 'block', marginTop: '5px' }}>{fieldError}</span>}
           </div>
         );
       case "dropdown":
         return (
           <div className="form-field">
             <DropDown
-              id={inputId}
+              id={field.id}
               name={field.id}
               value={fieldValue}
               onChange={field.onChange || handleChange}
               dropObj={field.dropObj || dropObj}
             />
-            {fieldError && <span className="error" style={{ color: 'red', display: 'block', marginTop: '5px' }}>{fieldError}</span>}
           </div>
         );
 
       case "radio":
         return (
           <div className="form-field">
-            {fieldError && <span className="error">{fieldError}</span>}
             <div className="radio-group">
               {field.options.map((opt) => {
-                const radioId = `${inputId}-${opt}`;
-                const isChecked = field.value === opt || formData[field.id] === opt;
+                const radioId = `${field.id}-${opt}`;
+                const isChecked =
+                  field.value === opt || formData[field.id] === opt;
                 return (
                   <div key={opt} className="radio-option">
                     <RadioCom
@@ -230,13 +175,18 @@ const FormCom = ({
       case "checkbox":
         return (
           <div className="form-field">
-            {fieldError && <span className="error">{fieldError}</span>}
             <div className="checkbox-group">
               {field.options.map((opt) => {
-                const checkboxId = `${inputId}-${opt}`;
-                const isChecked = Array.isArray(formData[field.id]) && formData[field.id].includes(opt);
+                const checkboxId = `${field.id}-${opt}`;
+                const isChecked =
+                  Array.isArray(formData[field.id]) &&
+                  formData[field.id].includes(opt);
                 return (
-                  <label key={opt} htmlFor={checkboxId} style={{ marginRight: "10px" }}>
+                  <label
+                    key={opt}
+                    htmlFor={checkboxId}
+                    style={{ marginRight: "10px" }}
+                  >
                     <input
                       type="checkbox"
                       id={checkboxId}
@@ -253,13 +203,23 @@ const FormCom = ({
           </div>
         );
 
+      case "button":
+        return (
+          <ButtonCom
+            type={field.type}
+            onClick={field.onClick}
+            disabled={field.disabled}
+          >
+            {field.name}
+          </ButtonCom>
+        );
+
       case "file":
         return (
           <div className="form-field">
-            {fieldError && <span className="error">{fieldError}</span>}
             <input
               type="file"
-              id={inputId}
+              id={field.id}
               name={field.id}
               accept={field.accept}
               onChange={handleChange}
@@ -275,14 +235,25 @@ const FormCom = ({
   return (
     <form onSubmit={handleSubmit} className="form">
       {fields.map((field) => {
-        const inputId = `form-field-${field.id}`;
+        const fieldError =
+          field.error !== undefined ? field.error : errors[field.id];
         return (
           <Fragment key={field.id}>
-            <div className="form-group">
-              <label htmlFor={inputId}>{field.name}</label>
-              {renderField(field)}
-            </div>
-            <br />
+            {(!field?.NoLabel ||
+              ["Option 1", "Note 1"].includes(field.placeholder)) && (
+              <div>
+                <label htmlFor={field.id}>{field.name}</label>
+                {fieldError && (
+                  <span
+                    className="error"
+                    style={{ color: "red", marginTop: "5px" }}
+                  >
+                    {fieldError}
+                  </span>
+                )}
+              </div>
+            )}
+            {renderField(field)}
           </Fragment>
         );
       })}
@@ -290,23 +261,24 @@ const FormCom = ({
       <div
         style={{
           textAlign: "center",
-          marginBottom: "20px",
           display: "flex",
           justifyContent: "center",
           gap: "10px",
+          margin: "10px 0px",
         }}
       >
-        {secondaryButton && (
+        {resetButton && (
           <ButtonCom
-            type="button"
+            type="reset"
             onClick={() => {
-              if (secondaryButton.onClick) secondaryButton.onClick();
-              setFormData(initialValues || {});
-              setErrors({});
+              if (typeof resetButton === "function") {
+                resetButton();
+              }
+              dispatch({ type: "RESET_DATA" });
             }}
-            color={secondaryButton.color || "default"}
+            color="red"
           >
-            {secondaryButton.text || "Cancel"}
+            Cancel
           </ButtonCom>
         )}
         <ButtonCom type="submit" color="green">

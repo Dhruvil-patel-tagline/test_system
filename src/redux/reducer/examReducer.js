@@ -38,6 +38,7 @@ const examReducer = (state = initialState, action) => {
     case "FETCH_EXAMS_FAILURE":
     case "DELETE_EXAM_FAILURE":
     case "UPDATE_EXAM_FAILURE":
+    case "CREATE_EXAM_FAILURE":
       return { ...state, loading: false, error: action.payload };
     default:
       return state;

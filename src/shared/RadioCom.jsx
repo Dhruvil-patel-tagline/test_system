@@ -5,7 +5,7 @@ const RadioCom = ({ text, name, value, onChange, checked }) => {
   const id = useId();
   return (
     <>
-      <div>
+      <div style={{margin:"10px 0px"}}>
         <input
           type="radio"
           className="radio"

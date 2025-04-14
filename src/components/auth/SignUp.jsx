@@ -6,7 +6,6 @@ import Loader from "../../shared/Loader";
 import { postRequest } from "../../utils/api";
 import { fields, signUpUserObj } from "../../utils/staticObj";
 import "./css/auth.css";
-// import ReusableForm from "../../shared/FormCom";
 import AuthRoute from "./AuthRoute";
 import FormCom from "../../shared/FormCom";
 
