@@ -1,4 +1,4 @@
-// shared/ReusableForm.jsx
+
 import { Fragment, useState } from "react";
 import { dropObj } from "../utils/staticObj";
 import validate from "../utils/validate";
@@ -21,31 +21,24 @@ const FormCom = ({
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    // Only trim if value exists and has trim method
+
     const trimmedValue = value && typeof value === 'string' ? value.trim() : value;
-
-    // Update form data first
     setFormData(prev => ({ ...prev, [name]: trimmedValue }));
-
-    // Find the field configuration
     const field = fields.find(f => f.id === name);
 
-    // Clear existing error for this field
     setErrors(prev => {
       const newErrors = { ...prev };
       delete newErrors[name];
       return newErrors;
     });
 
-    // Run validation if field exists
+
     if (field) {
       let error = null;
-
-      // First check field-specific validation
       if (field.validate) {
         error = field.validate(trimmedValue, formData);
       } else {
-        // Fall back to default validation based on input type
+
         switch (field.input) {
           case "input":
           case "password":
@@ -62,7 +55,6 @@ const FormCom = ({
         }
       }
 
-      // Set error if validation failed
       if (error) {
         setErrors(prev => ({ ...prev, [name]: error }));
       }
@@ -73,7 +65,6 @@ const FormCom = ({
     if (field.validate) {
       return field.validate(value, formData);
     }
-
     switch (field.input) {
       case "input":
       case "password":
@@ -115,15 +106,15 @@ const FormCom = ({
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // First validate all fields
+
     const newErrors = {};
     let isValid = true;
 
     fields.forEach(field => {
-      // Get the value either from field.value or formData
+
       const value = field.value !== undefined ? field.value : formData[field.id];
 
-      // First try field's own validation
+
       if (field.validate) {
         const error = field.validate(value, formData);
         if (error) {
@@ -131,7 +122,7 @@ const FormCom = ({
           isValid = false;
         }
       } else {
-        // Fall back to default validation
+
         const error = validateField(field, value);
         if (error) {
           newErrors[field.id] = error;
@@ -140,7 +131,7 @@ const FormCom = ({
       }
     });
 
-    // Run custom validation if provided
+
     if (customValidation) {
       const customErrors = customValidation(formData);
       if (customErrors && Object.keys(customErrors).length > 0) {
@@ -149,10 +140,8 @@ const FormCom = ({
       }
     }
 
-    // Update error state
     setErrors(newErrors);
 
-    // If valid, call onSubmit
     if (isValid) {
       onSubmit(formData, setFormData, setErrors);
     }
@@ -160,7 +149,7 @@ const FormCom = ({
 
   const renderField = (field) => {
     const inputId = `form-field-${field.id}`;
-    // Use field.error directly if provided, otherwise use internal errors state
+
     const fieldError = field.error !== undefined ? field.error : errors[field.id];
     const fieldValue = field.value !== undefined ? field.value : (formData[field.id] || "");
 
@@ -174,7 +163,7 @@ const FormCom = ({
               name={field.id}
               value={fieldValue}
               onChange={(e) => {
-                // Call custom onChange if provided
+
                 if (field.onChange) {
                   field.onChange(e);
                 } else {

@@ -45,14 +45,12 @@ const NewForm = () => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Check if a question is a duplicate
   const isDuplicateQuestion = (index, value) => {
     return examData.questions.some(
       (q, i) => i !== index && q?.question?.trim() === value?.trim(),
     );
   };
 
-  // Validate a question
   const handleQueValidate = (index) => {
     const errors = {};
     errors.optionsError = "";
@@ -87,7 +85,6 @@ const NewForm = () => {
     return !errors.questionError && !errors.answerError && !errors.optionsError;
   };
 
-  // Save a question and navigate
   const handleQuestionSave = (index, page) => {
     let allQue;
     if (handleQueValidate(index)) {
@@ -111,7 +108,6 @@ const NewForm = () => {
     return allQue;
   };
 
-  // Handle subject change
   const handleSubjectChange = (e) => {
     const value = e.target.value;
     setExamData({ ...examData, subjectName: value });
@@ -119,7 +115,6 @@ const NewForm = () => {
     setError({ ...error, subjectError });
   };
 
-  // Handle note change
   const handleNoteChange = (index, value) => {
     const updatedNotes = [...examData.notes];
     updatedNotes[index] = value;
@@ -136,7 +131,6 @@ const NewForm = () => {
     setExamData({ ...examData, notes: updatedNotes });
   };
 
-  // Validate the entire form
   const handleValidate = useCallback(
     (result) => {
       const errors = { ...teacherErrorObj };
@@ -158,22 +152,18 @@ const NewForm = () => {
     [examData],
   );
 
-  // Handle form submission
   const handleSubmit = async (formData, setFormData, setErrors) => {
     let hasErrors = false;
 
-    // Validate subject name
     const subjectError = validate("Subject name", examData.subjectName);
     if (subjectError) {
       setError(prev => ({ ...prev, subjectError }));
       hasErrors = true;
     }
 
-    // Validate all questions
     const allQuestionsValid = Array(TOTAL_QUESTIONS).fill(false).map((_, index) => {
       const question = examData.questions[index];
 
-      // Validate question text
       if (!question.question.trim()) {
         if (index === currentQuestion) {
           setQuestionsError(prev => ({ ...prev, questionError: "Question cannot be empty" }));
@@ -181,7 +171,6 @@ const NewForm = () => {
         return false;
       }
 
-      // Validate duplicate questions
       if (isDuplicateQuestion(index, question.question)) {
         if (index === currentQuestion) {
           setQuestionsError(prev => ({ ...prev, questionError: "Duplicate question not allowed" }));
@@ -189,7 +178,6 @@ const NewForm = () => {
         return false;
       }
 
-      // Validate options
       const hasEmptyOption = question.options.some(opt => !opt.trim());
       if (hasEmptyOption) {
         if (index === currentQuestion) {
@@ -235,7 +223,6 @@ const NewForm = () => {
       hasErrors = true;
     }
 
-    // Return if any validation fails
     if (hasErrors) {
       return;
     }
@@ -249,7 +236,6 @@ const NewForm = () => {
     }
   };
 
-  // Reset the form
   const resetForm = () => {
     setExamData({
       subjectName: "",
@@ -268,14 +254,12 @@ const NewForm = () => {
     setCurrentQuestion(0);
   };
 
-  // Set all questions as valid if updating
   useEffect(() => {
     if (state?.questions) {
       setAllQuestionError(Array(TOTAL_QUESTIONS).fill(true));
     }
   }, [isUpdateForm]);
 
-  // Show error if updating without questions
   if (isUpdateForm) {
     if (!state?.questions) {
       return (
@@ -291,9 +275,7 @@ const NewForm = () => {
     }
   }
 
-  // Prepare form fields for FormCom
   const prepareFormFields = () => {
-    // Create subject field with validation
     const subjectField = {
       id: "subjectName",
       type: "text",
@@ -305,7 +287,6 @@ const NewForm = () => {
       error: error.subjectError,
     };
 
-    // Create a custom field for the current question
     const questionField = {
       id: `question-${currentQuestion}`,
       type: "text",
@@ -333,7 +314,6 @@ const NewForm = () => {
       error: questionsError.questionError,
     };
 
-    // Create fields for options
     const optionFields = examData.questions[currentQuestion].options.map((opt, idx) => ({
       id: `option-${currentQuestion}-${idx}`,
       type: "text",
@@ -366,10 +346,10 @@ const NewForm = () => {
         updatedQuestions[currentQuestion].answer = "";
         setExamData({ ...examData, questions: updatedQuestions });
       },
-      error: idx === 0 ? questionsError.optionsError : null, // Show error only on first option
+      error: idx === 0 ? questionsError.optionsError : null, 
     }));
 
-    // Create fields for answer radio buttons
+    
     const answerField = {
       id: `answer-${currentQuestion}`,
       type: "radio",
@@ -390,7 +370,7 @@ const NewForm = () => {
       error: questionsError.answerError,
     };
 
-    // Create fields for notes
+
     const noteFields = examData.notes.map((note, idx) => ({
       id: `note-${idx}`,
       type: "text",
@@ -425,7 +405,7 @@ const NewForm = () => {
     ];
   };
 
-  // Prepare navigation buttons
+
   const navigationButtons = {
     previous: {
       text: "Previous",

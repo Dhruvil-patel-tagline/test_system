@@ -87,14 +87,12 @@ const NewForm = () => {
             optionsError: "",
         };
 
-        // Validate question text
         if (!question?.question?.trim()) {
             errors.questionError = "Question cannot be empty";
         } else if (isDuplicateQuestion(index, question.question)) {
             errors.questionError = "Duplicate question not allowed";
         }
 
-        // Validate options
         if (!question?.options || !Array.isArray(question.options)) {
             errors.optionsError = "Invalid options format";
         } else {
@@ -106,7 +104,6 @@ const NewForm = () => {
             }
         }
 
-        // Validate answer
         if (!question?.answer?.trim()) {
             errors.answerError = "Answer is required";
         }
@@ -115,7 +112,6 @@ const NewForm = () => {
         return !errors.questionError && !errors.answerError && !errors.optionsError;
     };
 
-    // Handle question text change
     const handleQuestionChange = (index, value) => {
         const updatedQuestions = [...examData.questions];
         if (!updatedQuestions[index]) {
@@ -128,7 +124,6 @@ const NewForm = () => {
         updatedQuestions[index].question = value;
         setExamData({ ...examData, questions: updatedQuestions });
 
-        // Only validate if there's an error or if the input is becoming valid
         if (questionsError.questionError || value?.trim()) {
             const errors = { ...questionsError };
             if (!value?.trim()) {
@@ -142,7 +137,6 @@ const NewForm = () => {
         }
     };
 
-    // Handle option change
     const handleOptionChange = (qIndex, optIndex, value) => {
         const updatedQuestions = [...examData.questions];
         if (!updatedQuestions[qIndex]) {
@@ -153,11 +147,10 @@ const NewForm = () => {
             };
         }
         updatedQuestions[qIndex].options[optIndex] = value;
-        updatedQuestions[qIndex].answer = ""; // Reset answer when options change
+        updatedQuestions[qIndex].answer = ""; 
 
         setExamData({ ...examData, questions: updatedQuestions });
 
-        // Only validate if there's an error or if the input is becoming valid
         if (questionsError.optionsError || value?.trim()) {
             const errors = { ...questionsError };
             if (!value?.trim()) {
@@ -171,7 +164,6 @@ const NewForm = () => {
         }
     };
 
-    // Handle answer change
     const handleAnswerChange = (index, value) => {
         const updatedQuestions = [...examData.questions];
         if (!updatedQuestions[index]) {
@@ -184,7 +176,6 @@ const NewForm = () => {
         updatedQuestions[index].answer = value;
         setExamData({ ...examData, questions: updatedQuestions });
 
-        // Only validate if there's an error or if the input is becoming valid
         if (questionsError.answerError || value?.trim()) {
             const errors = { ...questionsError };
             if (!value?.trim()) {
@@ -196,7 +187,6 @@ const NewForm = () => {
         }
     };
 
-    // Save a question and navigate
     const handleQuestionSave = (index, page) => {
         let allQue;
         if (handleQueValidate(index)) {
@@ -220,7 +210,6 @@ const NewForm = () => {
         return allQue;
     };
 
-    // Validate the entire form
     const handleValidate = useCallback(
         (result) => {
             const errors = { ...teacherErrorObj };
@@ -242,26 +231,21 @@ const NewForm = () => {
         [examData],
     );
 
-    // Custom validation function for the form
     const customValidation = (formData) => {
         const errors = {};
 
-        // Validate subject
         if (!examData.subjectName?.trim()) {
             errors.subjectName = "Subject name is required";
         }
 
-        // Validate current question
         const currentQ = examData.questions[currentQuestion];
 
-        // Question validation
         if (!currentQ?.question?.trim()) {
             errors[`question-${currentQuestion}`] = "Question cannot be empty";
         } else if (isDuplicateQuestion(currentQuestion, currentQ.question)) {
             errors[`question-${currentQuestion}`] = "Duplicate question not allowed";
         }
 
-        // Options validation
         const hasEmptyOption = currentQ?.options?.some(opt => !opt?.trim());
         if (hasEmptyOption) {
             errors[`option-${currentQuestion}-0`] = "4 options are required for each question";
@@ -269,12 +253,10 @@ const NewForm = () => {
             errors[`option-${currentQuestion}-0`] = "Same option not allowed";
         }
 
-        // Answer validation
         if (!currentQ?.answer?.trim()) {
             errors[`answer-${currentQuestion}`] = "Answer is required";
         }
 
-        // Notes validation
         if (!examData.notes?.every(note => note?.trim())) {
             errors.note0 = "Notes are required";
             errors.note1 = "Notes are required";
@@ -283,21 +265,17 @@ const NewForm = () => {
             errors.note1 = "Notes can not be same";
         }
 
-        // Update error states in parent component
         if (Object.keys(errors).length > 0) {
-            // Update subject error
             if (errors.subjectName) {
                 setError(prev => ({ ...prev, subjectError: errors.subjectName }));
             }
 
-            // Update question errors
             setQuestionsError({
                 questionError: errors[`question-${currentQuestion}`] || "",
                 optionsError: errors[`option-${currentQuestion}-0`] || "",
                 answerError: errors[`answer-${currentQuestion}`] || ""
             });
 
-            // Update notes error
             if (errors.note0) {
                 setError(prev => ({ ...prev, noteError: errors.note0 }));
             }
@@ -306,17 +284,14 @@ const NewForm = () => {
         return errors;
     };
 
-    // Handle form submission
-    const handleSubmit = async (formData, setFormData, setErrors) => {
-        // The validation is now handled by FormCom's customValidation
-        // We only need to handle the API call here
+    const handleSubmit =  (formData, setFormData, setErrors) => {
         setIsSubmitting(true);
 
         try {
             if (isUpdateForm) {
-                await dispatch(updateExam(examData, state?.examId, token, navigate));
+                 dispatch(updateExam(examData, state?.examId, token, navigate));
             } else {
-                await dispatch(createExam(examData, token, navigate));
+                 dispatch(createExam(examData, token, navigate));
             }
         } catch (error) {
             toast.error("An error occurred while saving the exam");
@@ -325,7 +300,6 @@ const NewForm = () => {
         }
     };
 
-    // Reset the form
     const resetForm = () => {
         setExamData({
             subjectName: "",
@@ -344,14 +318,12 @@ const NewForm = () => {
         setCurrentQuestion(0);
     };
 
-    // Set all questions as valid if updating
     useEffect(() => {
         if (state?.questions) {
             setAllQuestionError(Array(TOTAL_QUESTIONS).fill(true));
         }
     }, [isUpdateForm]);
 
-    // Show error if updating without questions
     if (isUpdateForm) {
         if (!state?.questions) {
             return (
@@ -367,7 +339,6 @@ const NewForm = () => {
         }
     }
 
-    // Prepare form fields for FormCom
     const prepareFormFields = () => {
         const currentQ = examData.questions[currentQuestion] || {
             question: "",
@@ -521,7 +492,6 @@ const NewForm = () => {
                     updatedQuestions[currentQuestion].answer = value;
                     setExamData(prev => ({ ...prev, questions: updatedQuestions }));
 
-                    // Clear answer error when input becomes valid
                     if (value?.trim()) {
                         setQuestionsError(prev => ({ ...prev, answerError: "" }));
                     } else {
@@ -554,7 +524,6 @@ const NewForm = () => {
                     updatedNotes[idx] = value;
                     setExamData(prev => ({ ...prev, notes: updatedNotes }));
 
-                    // Validate and update error
                     if (!value?.trim()) {
                         setError(prev => ({ ...prev, noteError: "Note is required" }));
                     } else if (idx === 1 && value?.trim() === examData.notes[0]?.trim()) {
@@ -570,7 +539,6 @@ const NewForm = () => {
         ];
     };
 
-    // Prepare navigation buttons
     const navigationButtons = {
         previous: {
             text: "Previous",
