@@ -1,0 +1,46 @@
+.heading {
+  text-align: center;
+  color: rgb(18, 219, 206);
+}
+
+.error {
+  color: red;
+}
+.horizontalRule {
+  border-top: 1px solid rgb(18, 219, 206);
+}
+
+.studentDashboardContainer{
+  text-align: center;
+  color: rgb(18, 219, 206);
+  padding-bottom: 20px;
+}
+
+.studentResultContainer{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin-top: 20px;
+}
+
+.resultHeading{
+  color: rgb(18, 219, 206);
+  padding: 0px 20px;
+}
+
+.editProfileContainer{
+  max-width: 600px;
+  width: 100%;
+  margin: 30px 0px;
+  padding: 20px;
+  border: 1px solid gray;
+  border-radius: 10px;
+}
+
+.editProfileHeading{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 10px 0px;
+}

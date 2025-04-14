@@ -1,0 +1,84 @@
+.error {
+  color: red;
+  font-size: medium;
+  margin-left: 10px;
+}
+.authContainer {
+  display: flex;
+  justify-content: center;
+  height: 100%;
+  align-items: center;
+  background-image: url("../../../assets/login.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  padding: 20px;
+}
+
+.authInnerDiv {
+  border: 1px solid gray;
+  padding: 30px;
+  background-color: rgba(0, 0, 0, 0.5);
+  max-width: 600px;
+  width: 100%;
+  border-radius: 10px;
+}
+
+.authHeading {
+  text-align: center;
+  margin-bottom: 15px;
+  color: rgb(18, 219, 206);
+}
+
+.form {
+  max-width: 600px;
+  width: 100%;
+}
+
+.forgotInner {
+  display: flex;
+  gap: 20px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.resetPasswordContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.resetPasswordInner {
+  max-width: 600px;
+  width: 100%;
+  padding: 20px;
+  border: 1px solid gray;
+  border-radius: 10px;
+  margin: 20px;
+}
+
+.resetPassForm {
+  max-width: 600px;
+  width: 100%;
+}
+
+.resetPassHeading {
+  color: rgb(18, 219, 206);
+  text-align: center;
+}
+
+.btnIcon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  color: red;
+}
+
+.reset-btn-container{
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}

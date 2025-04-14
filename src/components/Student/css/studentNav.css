@@ -1,0 +1,37 @@
+.StuActive {
+  color: gray;
+  border-bottom: 2px solid rgb(18, 219, 206);
+}
+
+/* .studentAnchor {
+  padding: 25px;
+} */
+
+.stuContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0px 20px;
+}
+
+.StudentNavbar {
+  display: flex;
+  background-color: black;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0px 5%;
+  border-radius: 15px;
+}
+
+@media (max-width: 360px) {
+  .StudentNavbar {
+    flex-direction: column;
+    align-items: start;
+    border-radius: 0px;
+    padding: 0px;
+  }
+  .StuActive {
+    border: 0px;
+    border-left: 2px solid rgb(18, 219, 206);
+  }
+}

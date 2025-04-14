@@ -1,0 +1,68 @@
+.btnContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+}
+
+.examError {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  background: black;
+  padding: 20px;
+}
+
+.examRootCtn{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+}
+
+.examSecondRoot{
+    margin: 20px;
+    padding: 15px;
+    max-width: 900px;
+    width: 100%;
+    border: 1px solid gray;
+    border-radius: 10px;
+}
+
+.subjectContainer{
+   display: flex;
+   justify-content: space-between;
+   margin: 20px 0px;
+   flex-wrap: wrap;
+   gap: 15px;
+}
+
+.examBtnContainer{
+    display: flex;
+    justify-content: space-between;
+    margin: 10px 0px;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.btnIcon{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+}
+
+.remainingAnsContainer{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.remainingAnsOptContainer{
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    flex-direction: column;
+}

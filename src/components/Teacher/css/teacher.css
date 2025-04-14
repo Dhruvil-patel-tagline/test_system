@@ -1,0 +1,152 @@
+.active {
+  color: gray;
+  border-bottom: 2px solid blue;
+}
+
+.activeStatus {
+  background-color: green;
+  border-radius: 15px;
+  padding: 5px 20px;
+}
+
+.pendingStatus {
+  background-color: rgb(176, 176, 80);
+  border-radius: 15px;
+  color: black;
+  padding: 5px 20px;
+}
+
+.allStudentCtn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.allStudentInner {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  width: 100%;
+  max-width: 700px;
+  padding: 20px;
+  gap: 20px;
+}
+
+.verifiedStudent {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.bntIcon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+}
+
+.examDetailRoot {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding: 0px 20px;
+}
+
+.studentDetailsRoot {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.studentDetailsInner {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 30px;
+  color: rgb(18, 219, 206);
+  font-size: 20px;
+  max-width: 700px;
+  width: 100%;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.studentDetailsTable {
+  max-width: 900px;
+  width: 100%;
+  padding: 20px;
+}
+
+.teacherDashboardContainer {
+  display: flex;
+  justify-content: center;
+  margin: 20px;
+}
+
+.teacherFormErrorContainer {
+  background-color: black;
+  color: red;
+  text-align: center;
+  height: 200px;
+}
+.teacherFormHeading {
+  text-align: center;
+  color: rgb(18, 219, 206);
+}
+
+.teacherFormInner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  padding: 20px;
+  flex-wrap: wrap;
+}
+
+.teacherError {
+  color: red;
+  margin-left: 10px;
+}
+
+.teacherLabel{
+  display: inline-block;
+  margin: 20px 0px;
+  font-size: 20px;
+}
+
+.allQuestionContainer{
+  border: 1px solid gray;
+  padding: 15px;
+  border-radius: 10px;
+}
+
+.teacherOptionContainer{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.subTeacherContainer{
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.btnGroup{
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.btnSecondContainer{
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}

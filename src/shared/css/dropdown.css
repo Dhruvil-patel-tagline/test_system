@@ -1,0 +1,8 @@
+.dropdown {
+  padding: 8px;
+  width: 100%;
+  font-size: 1.4rem;
+  border-radius: 5px;
+  background: transparent;
+  border: 1px solid gray;
+}

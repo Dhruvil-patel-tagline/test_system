@@ -1,0 +1,107 @@
+.active {
+  color: gray;
+  border-bottom: 2px solid rgb(18, 219, 206);
+  padding: 25px;
+}
+
+.menuDiv {
+  display: none;
+  background-color: black;
+  padding: 20px 5%;
+}
+
+.menuBtn {
+  cursor: pointer;
+}
+
+.mobile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  row-gap: 20px;
+  align-items: center;
+  color: rgb(18, 219, 206);
+}
+.navbar {
+  display: flex;
+  background-color: black;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0px 5%;
+}
+
+.logoDiv {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
+
+.innerNav {
+  display: flex;
+  gap: 5%;
+}
+.navAnchor {
+  padding: 25px;
+}
+.footer{
+  width: 100%;
+  text-align: center;
+  padding: 18px;
+  background-color: black;
+}
+
+@media (max-width: 768px) {
+  .active,
+  .navAnchor {
+    padding: 25px 6px;
+  }
+}
+
+@media (max-width: 600px) {
+  .navbar {
+    flex-direction: column;
+    gap: 10px;
+    padding-bottom: 10px;
+  }
+  .mobile {
+    display: none;
+  }
+  .mobile p{
+    margin-bottom: 15px;
+  }
+  .mobileView {
+    display: block;
+    align-items: start;
+  }
+
+  .innerNav {
+    flex-direction: column;
+  }
+
+  .menuDiv {
+    display: block;
+  }
+  .logoDiv {
+    flex-direction: column;
+    align-items: start;
+    gap: 10px;
+  }
+  .logoAndMenu {
+    display: flex;
+    justify-content: space-between;
+    width: calc(100vw - 20px);
+    padding-left: 20px;
+  }
+  .logo {
+    display: flex;
+    align-items: center;
+  }
+  .active {
+    border-left: 2px solid rgb(18, 219, 206);
+    border-bottom: none;
+  }
+  a {
+    padding: 15px 10px;
+  }
+}

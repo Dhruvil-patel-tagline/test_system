@@ -1,0 +1,17 @@
+
+.homeContainer{
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+.homeInner{
+    margin-top: 20px;
+    flex: 1;
+}
+.notFoundContainer{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    flex-direction: column;
+}
