@@ -1,24 +1,27 @@
 /* eslint-disable react-refresh/only-export-components */
-import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import DynamicForm from "../../shared/DynamicForm";
 import Loader from "../../shared/Loader";
 import { putRequest } from "../../utils/api";
 import { getCookie } from "../../utils/getCookie";
 import { editProfileField } from "../../utils/staticObj";
 import AuthRoute from "../auth/AuthRoute";
 import "./css/student.css";
-import DynamicForm from "../../shared/DynamicForm";
 
 const EditProfile = () => {
   const navigate = useNavigate();
   const user = getCookie("authUser");
   const token = getCookie("authToken");
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
+  const loading = useSelector((state) => state.formData.loading);
 
   const handleRename = async (formData, resetFormData) => {
     try {
-      setLoading(true);
+      // setLoading(true);
+      dispatch({ type: "SUBMIT_DYNAMIC_FORM" });
       const response = await putRequest("student/studentProfile", formData, {
         "access-token": token,
       });
@@ -31,7 +34,8 @@ const EditProfile = () => {
         toast.error(response?.message || "Error occurred");
       }
     } finally {
-      setLoading(false);
+      // setLoading(false);
+      dispatch({ type: "SUBMIT_EXAM_LOADING" });
     }
   };
 
@@ -43,7 +47,7 @@ const EditProfile = () => {
         <p>Name: {user?.name}</p>
         <p>Email: {user?.email}</p>
       </div>
-      <hr className="horizontalRule" style={{ marginBottom:"10px"}} />
+      <hr className="horizontalRule" style={{ marginBottom: "10px" }} />
       <DynamicForm
         fields={editProfileField}
         initialValues={{ name: user?.name }}

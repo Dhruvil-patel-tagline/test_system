@@ -1,21 +1,24 @@
 /* eslint-disable react-refresh/only-export-components */
-import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import DynamicForm from "../../shared/DynamicForm";
 import Loader from "../../shared/Loader";
 import { postRequest } from "../../utils/api";
 import { fields, signUpUserObj } from "../../utils/staticObj";
 import AuthRoute from "./AuthRoute";
 import "./css/auth.css";
-import DynamicForm from "../../shared/DynamicForm";
 
 const SignUp = () => {
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
+  const loading = useSelector((state) => state.formData.loading);
 
   const addUser = async (userData, resetFormData) => {
     try {
-      setLoading(true);
+      // setLoading(true);
+      dispatch({ type: "SUBMIT_DYNAMIC_FORM" });
       let response = await postRequest("users/SignUp", { data: userData });
       if (response.statusCode === 200) {
         toast.success("Please verify your email");
@@ -23,7 +26,8 @@ const SignUp = () => {
         navigate("/login");
       }
     } finally {
-      setLoading(false);
+      // setLoading(false);
+      dispatch({ type: "SUBMIT_EXAM_LOADING" });
     }
   };
 

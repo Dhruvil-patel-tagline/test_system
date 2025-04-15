@@ -1,22 +1,25 @@
 /* eslint-disable react-refresh/only-export-components */
-import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import ButtonCom from "../../shared/ButtonCom";
+import DynamicForm from "../../shared/DynamicForm";
 import Loader from "../../shared/Loader";
 import { postRequest } from "../../utils/api";
 import { forgotFields } from "../../utils/staticObj";
 import AuthRoute from "./AuthRoute";
 import "./css/auth.css";
-import DynamicForm from "../../shared/DynamicForm";
 
 const ForgetPassword = () => {
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
+  const loading = useSelector((state) => state.formData.loading);
 
   const handleSubmit = async (formData, resetFormData) => {
     try {
-      setLoading(true);
+      // setLoading(true);
+      dispatch({ type: "SUBMIT_DYNAMIC_FORM" });
       let response = await postRequest("users/ForgotPassword", {
         data: formData,
         errorMessage: "User not fond",
@@ -28,7 +31,8 @@ const ForgetPassword = () => {
         toast.error(response?.message || "User not fond");
       }
     } finally {
-      setLoading(false);
+      // setLoading(false);
+      dispatch({ type: "SUBMIT_EXAM_LOADING" });
     }
   };
 

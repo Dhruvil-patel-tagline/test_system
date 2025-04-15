@@ -297,7 +297,7 @@ const TeacherFormValidate = ({ isUpdateForm, state }) => {
         placeholder: `Option ${idx + 1}`,
         value: opt || "",
         error: questionsError.optionsError,
-        NoLabel: true,
+        noText: true,
         onChange: (e) => {
           handelOptionChange(e, idx);
         },
@@ -306,6 +306,7 @@ const TeacherFormValidate = ({ isUpdateForm, state }) => {
         id: `answer-${currentQuestion}`,
         type: "radio",
         name: "Answer",
+        noLabel: true,
         input: "radio",
         options:
           (currentQ.options || []).filter((opt) => opt?.trim() !== "") || [],
@@ -321,7 +322,7 @@ const TeacherFormValidate = ({ isUpdateForm, state }) => {
         type: "button",
         name: "Previous",
         input: "button",
-        NoLabel: true,
+        noText: true,
         onClick: () => {
           handleQuestionSave(currentQuestion, "previous");
         },
@@ -329,7 +330,7 @@ const TeacherFormValidate = ({ isUpdateForm, state }) => {
       },
       {
         type: "button",
-        NoLabel: true,
+        noText: true,
         onClick: () => {
           handleQuestionSave(currentQuestion, "next");
         },
@@ -347,7 +348,7 @@ const TeacherFormValidate = ({ isUpdateForm, state }) => {
         placeholder: `Note ${idx + 1}`,
         value: note || "",
         error: error.noteError,
-        NoLabel: true,
+        noText: true,
         onChange: (e) => {
           handleNoteChange(e, idx);
         },

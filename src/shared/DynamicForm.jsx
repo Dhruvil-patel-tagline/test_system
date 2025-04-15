@@ -29,10 +29,14 @@ const DynamicForm = ({
           field.error !== undefined ? field.error : errors[field.id];
         return (
           <Fragment key={field.id}>
-            {(!field?.NoLabel ||
+            {(!field?.noText ||
               ["Option 1", "Note 1"].includes(field.placeholder)) && (
               <div>
-                <label htmlFor={field.id}>{field.name}</label>
+                {field?.noLabel ? (
+                  <span>{field.name}</span>
+                ) : (
+                  <label htmlFor={field.id}>{field.name}</label>
+                )}
                 {fieldError && (
                   <span
                     className="error"

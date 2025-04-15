@@ -1,24 +1,27 @@
 /* eslint-disable react-refresh/only-export-components */
-import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import DynamicForm from "../../shared/DynamicForm";
 import Loader from "../../shared/Loader";
 import { postRequest } from "../../utils/api";
 import { getCookie } from "../../utils/getCookie";
 import { ResetPasswordFields, resetPasswordObj } from "../../utils/staticObj";
 import AuthRoute from "./AuthRoute";
 import "./css/auth.css";
-import DynamicForm from "../../shared/DynamicForm";
 
 const ResetPassword = () => {
   const token = getCookie("authToken");
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
+  const loading = useSelector((state) => state.formData.loading);
 
   const onSubmit = async (data, resetFormData) => {
-    const { oldPassword, password, confirmPassword } = data
+    const { oldPassword, password, confirmPassword } = data;
 
     try {
-      setLoading(true);
+      // setLoading(true);
+      dispatch({ type: "SUBMIT_DYNAMIC_FORM" });
       const response = await postRequest("users/ResetPassword", {
         data: {
           oldPassword,
@@ -34,7 +37,8 @@ const ResetPassword = () => {
         resetFormData();
       }
     } finally {
-      setLoading(false);
+      // setLoading(false);
+      dispatch({ type: "SUBMIT_EXAM_LOADING" });
     }
   };
 

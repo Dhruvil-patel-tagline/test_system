@@ -1,20 +1,23 @@
 /* eslint-disable react-refresh/only-export-components */
-import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
+import DynamicForm from "../../shared/DynamicForm";
 import Loader from "../../shared/Loader";
 import { postRequest } from "../../utils/api";
 import { loginFields, userObj } from "../../utils/staticObj";
 import AuthRoute from "./AuthRoute";
 import "./css/auth.css";
-import DynamicForm from "../../shared/DynamicForm";
 
 const Login = () => {
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
+  const loading = useSelector((state) => state.formData.loading);
 
   const onSubmit = async (formData, resetFormData) => {
     try {
-      setLoading(true);
+      // setLoading(true);
+      dispatch({ type: "SUBMIT_DYNAMIC_FORM" });
       const response = await postRequest("users/Login", { data: formData });
       if (response.statusCode === 200) {
         document.cookie = `authToken=${response?.data?.token}; path=/; max-age=${60 * 60}; secure`;
@@ -23,7 +26,8 @@ const Login = () => {
         resetFormData();
       }
     } finally {
-      setLoading(false);
+      // setLoading(false);
+      dispatch({ type: "SUBMIT_EXAM_LOADING" });
     }
   };
 

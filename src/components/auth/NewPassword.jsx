@@ -2,12 +2,12 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
+import DynamicForm from "../../shared/DynamicForm";
 import Loader from "../../shared/Loader";
 import { getRequest, postRequest } from "../../utils/api";
 import { newPasswordFields, newPasswordInitial } from "../../utils/staticObj";
 import AuthRoute from "./AuthRoute";
 import "./css/auth.css";
-import DynamicForm from "../../shared/DynamicForm";
 
 const NewPassword = () => {
   const [searchParams] = useSearchParams();

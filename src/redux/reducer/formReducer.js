@@ -1,6 +1,7 @@
 const initialState = {
   formData: {},
   errors: {},
+  loading: false,
 };
 
 const formReducer = (state = initialState, action) => {
@@ -11,6 +12,7 @@ const formReducer = (state = initialState, action) => {
       return {
         formData: {},
         errors: {},
+        loading: false,
       };
     case "SET_ERROR":
       return {
@@ -22,6 +24,10 @@ const formReducer = (state = initialState, action) => {
         ...state,
         errors: action.payload,
       };
+    case "SUBMIT_DYNAMIC_FORM":
+      return { ...state, loading: true };
+    case "SUBMIT_EXAM_LOADING":
+      return { ...state, loading: false };
     default:
       return state;
   }
