@@ -207,6 +207,16 @@ export const newPasswordFields = [
   },
 ];
 
+export const editProfileField = [
+  {
+    id: "name",
+    name: "Name",
+    type: "text",
+    input: "input",
+    placeholder: "Enter your name",
+  },
+];
+
 export const newPasswordInitial = {
   password: "",
   confirmPassword: "",

@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
 import { createExam, updateExam } from "../../../redux/action/examActions";
 import { getCookie } from "../../../utils/getCookie";
 import {
@@ -36,44 +35,52 @@ const TeacherFormValidate = ({ isUpdateForm, state }) => {
     notes: state?.notes || ["", ""],
   });
 
-  const isDuplicateQuestion = useCallback((index, value) => {
-    return examData.questions.some(
-      (q, i) => i !== index && q?.question?.trim() === value?.trim(),
-    );
-  }, []);
+  const isDuplicateQuestion = useCallback(
+    (index, value) => {
+      return examData.questions.some(
+        (q, i) => i !== index && q?.question?.trim() === value?.trim(),
+      );
+    },
+    [examData.questions],
+  );
 
-  const handleQueValidate = (index) => {
-    const question = examData.questions[index];
-    const errors = {
-      questionError: "",
-      answerError: "",
-      optionsError: "",
-    };
+  const handleQueValidate = useCallback(
+    (index) => {
+      const question = examData.questions[index];
+      const errors = {
+        questionError: "",
+        answerError: "",
+        optionsError: "",
+      };
 
-    if (!question?.question?.trim()) {
-      errors.questionError = "Question cannot be empty";
-    } else if (isDuplicateQuestion(index, question.question)) {
-      errors.questionError = "Duplicate question not allowed";
-    }
-
-    if (!question?.options || !Array.isArray(question.options)) {
-      errors.optionsError = "Invalid options format";
-    } else {
-      const hasEmptyOption = question.options.some((opt) => !opt?.trim());
-      if (hasEmptyOption) {
-        errors.optionsError = "4 options are required for each question";
-      } else if (!uniqueOpt(question.options)) {
-        errors.optionsError = "Same option not allowed";
+      if (!question?.question?.trim()) {
+        errors.questionError = "Question cannot be empty";
+      } else if (isDuplicateQuestion(index, question.question)) {
+        errors.questionError = "Duplicate question not allowed";
       }
-    }
 
-    if (!question?.answer?.trim()) {
-      errors.answerError = "Answer is required";
-    }
+      if (!question?.options || !Array.isArray(question.options)) {
+        errors.optionsError = "Invalid options format";
+      } else {
+        const hasEmptyOption = question.options.some((opt) => !opt?.trim());
+        if (hasEmptyOption) {
+          errors.optionsError = "4 options are required for each question";
+        } else if (!uniqueOpt(question.options)) {
+          errors.optionsError = "Same option not allowed";
+        }
+      }
 
-    setQuestionsError(errors);
-    return !errors.questionError && !errors.answerError && !errors.optionsError;
-  };
+      if (!question?.answer?.trim()) {
+        errors.answerError = "Answer is required";
+      }
+
+      setQuestionsError(errors);
+      return (
+        !errors.questionError && !errors.answerError && !errors.optionsError
+      );
+    },
+    [examData.questions, isDuplicateQuestion],
+  );
 
   const handleSubjectChange = (e) => {
     const { name, value } = e.target;
@@ -85,149 +92,89 @@ const TeacherFormValidate = ({ isUpdateForm, state }) => {
     }));
   };
 
-  const handleQuestionChange = useCallback((e) => {
-    const value = e.target.value;
-    const updatedQuestions = [...examData.questions];
-    if (!updatedQuestions[currentQuestion]) {
-      updatedQuestions[currentQuestion] = {
-        question: "",
-        answer: "",
-        options: ["", "", "", ""],
-      };
-    }
-    updatedQuestions[currentQuestion].question = value;
-    setExamData((prev) => ({ ...prev, questions: updatedQuestions }));
+  const handleQuestionChange = useCallback(
+    (e) => {
+      const value = e.target.value;
+      const updatedQuestions = [...examData.questions];
+      updatedQuestions[currentQuestion].question = value;
+      setExamData((prev) => ({ ...prev, questions: updatedQuestions }));
+      let error = !value?.trim()
+        ? "Question cannot be empty"
+        : isDuplicateQuestion(currentQuestion, value)
+          ? "Duplicate question not allowed"
+          : null;
+      setQuestionsError((prev) => ({ ...prev, questionError: error }));
+    },
+    [currentQuestion, examData.questions, isDuplicateQuestion],
+  );
 
-    if (!value?.trim()) {
-      setQuestionsError((prev) => ({
-        ...prev,
-        questionError: "Question cannot be empty",
-      }));
-    } else if (isDuplicateQuestion(currentQuestion, value)) {
-      setQuestionsError((prev) => ({
-        ...prev,
-        questionError: "Duplicate question not allowed",
-      }));
-    } else {
-      setQuestionsError((prev) => ({ ...prev, questionError: "" }));
-    }
-  }, []);
+  const handleAnswerChange = useCallback(
+    (e) => {
+      const value = e.target.value;
+      const updatedQuestions = [...examData.questions];
+      updatedQuestions[currentQuestion].answer = value;
+      setExamData((prev) => ({ ...prev, questions: updatedQuestions }));
+      let error = validate("Answer", value);
+      setQuestionsError((prev) => ({ ...prev, answerError: error }));
+    },
+    [currentQuestion, examData.questions],
+  );
 
-  const handleAnswerChange = useCallback((e) => {
-    const value = e.target.value;
-    const updatedQuestions = [...examData.questions];
-    if (!updatedQuestions[currentQuestion]) {
-      updatedQuestions[currentQuestion] = {
-        question: "",
-        answer: "",
-        options: ["", "", "", ""],
-      };
-    }
-    updatedQuestions[currentQuestion].answer = value;
-    setExamData((prev) => ({ ...prev, questions: updatedQuestions }));
+  const handelOptionChange = useCallback(
+    (e, idx) => {
+      const value = e.target.value;
+      const updatedQuestions = [...examData.questions];
 
-    if (value?.trim()) {
-      setQuestionsError((prev) => ({ ...prev, answerError: "" }));
-    } else {
-      setQuestionsError((prev) => ({
-        ...prev,
-        answerError: "Answer is required",
-      }));
-    }
-  }, []);
+      updatedQuestions[currentQuestion].options[idx] = value;
+      updatedQuestions[currentQuestion].answer = "";
+      setExamData((prev) => ({ ...prev, questions: updatedQuestions }));
+      let error = !value?.trim()
+        ? "Option can not be empty"
+        : !uniqueOpt(updatedQuestions[currentQuestion].options)
+          ? "Same option not allowed"
+          : null;
+      setQuestionsError((prev) => ({ ...prev, optionsError: error }));
+    },
+    [currentQuestion, examData.questions],
+  );
 
-  const optionValidate = (value, currentQ, idx) => {
-    if (!value?.trim()) {
-      return "Option cannot be empty";
-    }
-    const hasDuplicate =
-      currentQ.options.filter(
-        (o, i) => i !== idx && o?.trim() === value?.trim(),
-      ).length > 0;
-    if (hasDuplicate) {
-      return "Same option not allowed";
-    }
-    return null;
-  };
+  const handleNoteChange = useCallback(
+    (e, idx) => {
+      const value = e.target.value;
+      const updatedNotes = [...examData.notes];
+      updatedNotes[idx] = value;
+      setExamData((prev) => ({ ...prev, notes: updatedNotes }));
+      let error = validate("Note", value);
+      setError((prev) => ({ ...prev, noteError: error }));
+    },
+    [examData.notes],
+  );
 
-  const handelOptionChange = useCallback((e, idx) => {
-    const value = e.target.value;
-    const updatedQuestions = [...examData.questions];
-    if (!updatedQuestions[currentQuestion]) {
-      updatedQuestions[currentQuestion] = {
-        question: "",
-        answer: "",
-        options: ["", "", "", ""],
-      };
-    }
-    updatedQuestions[currentQuestion].options[idx] = value;
-    updatedQuestions[currentQuestion].answer = "";
-    setExamData((prev) => ({ ...prev, questions: updatedQuestions }));
-
-    if (!value?.trim()) {
-      setQuestionsError((prev) => ({
-        ...prev,
-        optionsError: "Option cannot be empty",
-      }));
-    } else {
-      const hasDuplicate =
-        updatedQuestions[currentQuestion].options.filter(
-          (opt, i) => i !== idx && opt?.trim() === value?.trim(),
-        ).length > 0;
-      if (hasDuplicate) {
-        setQuestionsError((prev) => ({
-          ...prev,
-          optionsError: "Same option not allowed",
-        }));
-      } else {
-        setQuestionsError((prev) => ({ ...prev, optionsError: "" }));
-      }
-    }
-  }, []);
-
-  const handleNoteChange = useCallback((e, idx) => {
-    const value = e.target.value;
-    const updatedNotes = [...examData.notes];
-    updatedNotes[idx] = value;
-    setExamData((prev) => ({ ...prev, notes: updatedNotes }));
-
-    if (!value?.trim()) {
-      setError((prev) => ({ ...prev, noteError: "Note is required" }));
-    } else if (idx === 1 && value?.trim() === examData.notes[0]?.trim()) {
-      setError((prev) => ({
-        ...prev,
-        noteError: "Notes can not be same",
-      }));
-    } else if (
-      updatedNotes.every((note) => note?.trim()) &&
-      updatedNotes[0]?.trim() !== updatedNotes[1]?.trim()
-    ) {
-      setError((prev) => ({ ...prev, noteError: null }));
-    }
-  }, []);
-
-  const handleQuestionSave = useCallback((index, page) => {
-    let allQue;
-    if (handleQueValidate(index)) {
-      allQue = allQuestionError.map((val, arrIndex) =>
-        arrIndex === index ? true : val,
-      );
-      setAllQuestionError(allQue);
-      page &&
-        setCurrentQuestion(
-          page === "previous" ? currentQuestion - 1 : currentQuestion + 1,
+  const handleQuestionSave = useCallback(
+    (index, page) => {
+      let allQue;
+      if (handleQueValidate(index)) {
+        allQue = allQuestionError.map((val, arrIndex) =>
+          arrIndex === index ? true : val,
         );
-    } else {
-      allQue = allQuestionError.map((val, arrIndex) =>
-        arrIndex === index ? false : val,
-      );
-      setAllQuestionError(allQue);
-    }
-    if (allQue) {
-      allQue.every((val) => val) && setError({ ...error, queError: null });
-    }
-    return allQue;
-  }, []);
+        setAllQuestionError(allQue);
+        page &&
+          setCurrentQuestion(
+            page === "previous" ? currentQuestion - 1 : currentQuestion + 1,
+          );
+      } else {
+        allQue = allQuestionError.map((val, arrIndex) =>
+          arrIndex === index ? false : val,
+        );
+        setAllQuestionError(allQue);
+      }
+      if (allQue) {
+        allQue.every((val) => val) && setError({ ...error, queError: null });
+      }
+      return allQue;
+    },
+    [allQuestionError, currentQuestion, error, handleQueValidate],
+  );
 
   const customValidation = () => {
     let result = handleQuestionSave(currentQuestion);
@@ -280,15 +227,10 @@ const TeacherFormValidate = ({ isUpdateForm, state }) => {
   };
 
   const handleSubmit = () => {
-    try {
-      if (isUpdateForm) {
-        dispatch(updateExam(examData, state?.examId, token, navigate));
-      } else {
-        dispatch(createExam(examData, token, navigate));
-      }
-    } catch (error) {
-      toast.error("An error occurred while saving the exam");
-      return Promise.reject(error);
+    if (isUpdateForm) {
+      dispatch(updateExam(examData, state?.examId, token, navigate));
+    } else {
+      dispatch(createExam(examData, token, navigate));
     }
   };
 
@@ -314,8 +256,7 @@ const TeacherFormValidate = ({ isUpdateForm, state }) => {
     if (state?.questions) {
       setAllQuestionError(Array(TOTAL_QUESTIONS).fill(true));
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isUpdateForm]);
+  }, [isUpdateForm, state?.questions]);
 
   const formFields = useMemo(() => {
     const currentQ = examData.questions[currentQuestion] || {
@@ -332,55 +273,34 @@ const TeacherFormValidate = ({ isUpdateForm, state }) => {
         placeholder: "Subject Name",
         value: examData.subjectName || "",
         error: error.subjectError,
-        validate: (value) => {
-          validate(value, "Subject name");
-        },
         onChange: (e) => {
           handleSubjectChange(e);
         },
-        labelClassName: "teacherLabel",
-        errorClassName: "teacherError",
       },
       {
         id: `question-${currentQuestion}`,
         type: "text",
-        name: `Question ${currentQuestion + 1}`,
+        name: `Question: ${currentQuestion + 1} / ${TOTAL_QUESTIONS}`,
         input: "input",
         placeholder: "Enter question",
         value: currentQ.question || "",
         error: questionsError.questionError,
-        validate: (value) => {
-          if (!value?.trim()) {
-            return "Question cannot be empty";
-          }
-          if (isDuplicateQuestion(currentQuestion, value)) {
-            return "Duplicate question not allowed";
-          }
-          return null;
-        },
         onChange: (e) => {
           handleQuestionChange(e);
         },
-        labelClassName: "teacherLabel",
-        errorClassName: "teacherError",
       },
       ...(currentQ.options || []).map((opt, idx) => ({
         id: `option-${currentQuestion}-${idx}`,
         type: "text",
-        name: `Option ${idx + 1}`,
+        name: `Options`,
         input: "input",
         placeholder: `Option ${idx + 1}`,
         value: opt || "",
         error: questionsError.optionsError,
         NoLabel: true,
-        validate: (value) => {
-          optionValidate(value, currentQ, idx);
-        },
         onChange: (e) => {
           handelOptionChange(e, idx);
         },
-        labelClassName: "teacherLabel",
-        errorClassName: "teacherError",
       })),
       {
         id: `answer-${currentQuestion}`,
@@ -391,14 +311,10 @@ const TeacherFormValidate = ({ isUpdateForm, state }) => {
           (currentQ.options || []).filter((opt) => opt?.trim() !== "") || [],
         value: currentQ.answer || "",
         error: questionsError.answerError,
-        validate: (value) => {
-          validate(value, "Answer");
-        },
         onChange: (e) => {
           handleAnswerChange(e);
         },
-        labelClassName: "teacherLabel",
-        errorClassName: "teacherError",
+        className: "radio-com",
       },
       {
         id: "previous",
@@ -421,30 +337,20 @@ const TeacherFormValidate = ({ isUpdateForm, state }) => {
         name: "Next",
         input: "button",
         id: "next",
+        className: "next-btn-div",
       },
       ...(examData.notes || ["", ""]).map((note, idx) => ({
         id: `note-${idx}`,
         type: "text",
-        name: `Note ${idx + 1}`,
+        name: `Notes`,
         input: "input",
         placeholder: `Note ${idx + 1}`,
         value: note || "",
         error: error.noteError,
         NoLabel: true,
-        validate: (value) => {
-          if (!value?.trim()) {
-            return "Note is required";
-          }
-          if (idx === 1 && value?.trim() === examData.notes[0]?.trim()) {
-            return "Notes can not be same";
-          }
-          return null;
-        },
         onChange: (e) => {
           handleNoteChange(e, idx);
         },
-        labelClassName: "teacherLabel",
-        errorClassName: "teacherError",
       })),
     ];
   }, [
@@ -452,7 +358,6 @@ const TeacherFormValidate = ({ isUpdateForm, state }) => {
     currentQuestion,
     error,
     questionsError,
-    isDuplicateQuestion,
     handleQuestionChange,
     handelOptionChange,
     handleAnswerChange,

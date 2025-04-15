@@ -1,0 +1,9 @@
+.submit-btn-from{
+    text-align: center;
+}
+
+.resetButton{
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}

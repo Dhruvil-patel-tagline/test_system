@@ -1,19 +1,18 @@
 /* eslint-disable react-refresh/only-export-components */
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
+import FormCom from "../../shared/FormCom";
 import Loader from "../../shared/Loader";
 import { postRequest } from "../../utils/api";
 import { loginFields, userObj } from "../../utils/staticObj";
-import "./css/auth.css";
 import AuthRoute from "./AuthRoute";
-import FormCom from "../../shared/FormCom";
+import "./css/auth.css";
 
 const Login = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
-  const onSubmit = async (formData) => {
+  const onSubmit = async (formData, resetFormData) => {
     try {
       setLoading(true);
       const response = await postRequest("users/Login", { data: formData });
@@ -21,8 +20,7 @@ const Login = () => {
         document.cookie = `authToken=${response?.data?.token}; path=/; max-age=${60 * 60}; secure`;
         document.cookie = `authUser=${JSON.stringify(response?.data)}; path=/; max-age=${60 * 60}; secure`;
         navigate("/dashboard");
-      } else {
-        toast.info(response.message);
+        resetFormData();
       }
     } finally {
       setLoading(false);
@@ -58,4 +56,3 @@ const Login = () => {
 };
 
 export default AuthRoute({ redirectIfAuth: true })(Login);
-

@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import { NavLink, Outlet } from "react-router-dom";
 import { links } from "../../utils/staticObj";
 import "./css/studentNav.css";
@@ -25,4 +26,3 @@ const StudentProfile = () => {
 
 export default AuthRoute({ requireAuth: true, allowedRoles: ['student'] })(StudentProfile);
 
-// export default StudentProfile;

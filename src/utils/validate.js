@@ -1,11 +1,11 @@
 import { regexEmail, regexName, regexPassword } from "./regex";
 
-const validate = (name, value, val2 = "") => {
+const validate = (name, value, formData={}) => {
   if (!value) {
     return `${name.charAt(0).toUpperCase() + name.substr(1)} is required`;
-  }
-  else if (typeof value === "string") {
-    if (!value?.trim()) return `${name.charAt(0).toUpperCase() + name.substr(1)} is required`;
+  } else if (typeof value === "string") {
+    if (!value?.trim())
+      return `${name.charAt(0).toUpperCase() + name.substr(1)} is required`;
   }
   switch (name) {
     case "name": {
@@ -22,7 +22,8 @@ const validate = (name, value, val2 = "") => {
       return null;
     }
     case "confirmPassword": {
-      if (val2 !== "" && value !== val2) return "Passwords did not match";
+      if (formData?.password !== "" && value !== formData?.password)
+        return "Passwords did not match";
       return null;
     }
     default:

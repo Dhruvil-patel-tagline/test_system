@@ -1,7 +1,6 @@
 /* eslint-disable react-refresh/only-export-components */
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
 import FormCom from "../../shared/FormCom";
 import Loader from "../../shared/Loader";
 import { postRequest } from "../../utils/api";
@@ -15,13 +14,9 @@ const ResetPassword = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
-  const onSubmit = async (data) => {
-    const { oldPassword, password, confirmPassword } = data;
+  const onSubmit = async (data, resetFormData) => {
+    const { oldPassword, password, confirmPassword } = data
 
-    if (password !== confirmPassword) {
-      toast.error("New password and confirm password do not match");
-      return;
-    }
     try {
       setLoading(true);
       const response = await postRequest("users/ResetPassword", {
@@ -36,6 +31,7 @@ const ResetPassword = () => {
       });
       if (response.statusCode === 200) {
         navigate("/profile");
+        resetFormData();
       }
     } finally {
       setLoading(false);

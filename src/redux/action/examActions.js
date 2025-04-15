@@ -49,7 +49,6 @@ export const deleteExam = (id, token) => async (dispatch) => {
 };
 
 export const createExam = (examData, token, navigate) => async (dispatch) => {
-  console.log(token);
 
   dispatch({ type: "CREATE_EXAM_REQUEST" });
   try {

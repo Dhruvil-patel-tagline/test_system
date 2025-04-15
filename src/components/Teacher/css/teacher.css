@@ -110,33 +110,33 @@
   margin-left: 10px;
 }
 
-.teacherLabel{
+.teacherLabel {
   display: inline-block;
   margin: 20px 0px;
   font-size: 20px;
 }
 
-.allQuestionContainer{
+.allQuestionContainer {
   border: 1px solid gray;
   padding: 15px;
   border-radius: 10px;
 }
 
-.teacherOptionContainer{
+.teacherOptionContainer {
   display: flex;
   align-items: center;
   gap: 10px;
   flex-wrap: wrap;
 }
 
-.subTeacherContainer{
+.subTeacherContainer {
   display: flex;
   gap: 20px;
   flex-wrap: wrap;
   width: 100%;
 }
 
-.btnGroup{
+.btnGroup {
   display: flex;
   justify-content: space-between;
   padding: 10px 0px;
@@ -144,9 +144,22 @@
   gap: 10px;
 }
 
-.btnSecondContainer{
+.btnSecondContainer {
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 10px;
+}
+
+.radio-com {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+.formBtn {
+  display: inline-block;
+}
+.next-btn-div {
+  position: absolute;
+  right: 0;
 }

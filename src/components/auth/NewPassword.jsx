@@ -28,14 +28,8 @@ const NewPassword = () => {
     fetchData();
   }, [token]);
 
-  const onSubmit = async (formData) => {
+  const onSubmit = async (formData, resetFormData) => {
     const { password, confirmPassword } = formData;
-
-    if (password !== confirmPassword) {
-      toast.error("Passwords do not match");
-      return;
-    }
-
     const user = {
       Password: password,
       ConfirmPassword: confirmPassword,
@@ -48,13 +42,11 @@ const NewPassword = () => {
         { data: user },
       );
       if (response?.statusCode === 200) {
-        toast.success("Password updated successfully");
         setTimeout(() => {
+          resetFormData();
           window.open("/login", "_blank");
           window.close();
         }, 3000);
-      } else {
-        toast.error(response?.message);
       }
     } finally {
       setLoading(false);

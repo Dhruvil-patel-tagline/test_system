@@ -1,28 +1,26 @@
 /* eslint-disable react-refresh/only-export-components */
-import { Fragment, useState } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import FormCom from "../../shared/FormCom";
 import Loader from "../../shared/Loader";
 import { postRequest } from "../../utils/api";
 import { fields, signUpUserObj } from "../../utils/staticObj";
-import "./css/auth.css";
 import AuthRoute from "./AuthRoute";
-import FormCom from "../../shared/FormCom";
+import "./css/auth.css";
 
 const SignUp = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
-  const addUser = async (userData, resetForm) => {
+  const addUser = async (userData, resetFormData) => {
     try {
       setLoading(true);
       let response = await postRequest("users/SignUp", { data: userData });
       if (response.statusCode === 200) {
         toast.success("Please verify your email");
-        resetForm(signUpUserObj);
+        resetFormData();
         navigate("/login");
-      } else {
-        toast.error(response?.message);
       }
     } finally {
       setLoading(false);

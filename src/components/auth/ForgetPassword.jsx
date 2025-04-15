@@ -14,7 +14,7 @@ const ForgetPassword = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (formData) => {
+  const handleSubmit = async (formData, resetFormData) => {
     try {
       setLoading(true);
       let response = await postRequest("users/ForgotPassword", {
@@ -23,6 +23,7 @@ const ForgetPassword = () => {
       });
       if (response.statusCode === 200) {
         navigate("/login");
+        resetFormData();
       } else {
         toast.error(response?.message || "User not fond");
       }

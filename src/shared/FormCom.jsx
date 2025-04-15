@@ -9,6 +9,7 @@ import DropDown from "./DropDown";
 import InputCom from "./InputCom";
 import InputPassword from "./InputPassword";
 import RadioCom from "./RadioCom";
+import "./css/formCom.css";
 
 const FormCom = ({
   fields,
@@ -21,6 +22,8 @@ const FormCom = ({
   const { formData, errors } = useSelector((state) => state.formData);
   const dispatch = useDispatch();
 
+  const cancelButtonClass = resetButton ? "resetButton" : "";
+
   useEffect(() => {
     dispatch({ type: "SET_DATA", payload: initialValues });
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -28,21 +31,17 @@ const FormCom = ({
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-
     const trimmedValue =
       value && typeof value === "string" ? value.trim() : value;
     dispatch({ type: "SET_DATA", payload: { [name]: trimmedValue } });
     const field = fields.find((f) => f.id === name);
 
-    if (field) {
+    if (field && errors[field.id]) {
       let error = null;
       if (field.validate) {
         error = field.validate(trimmedValue, formData);
       } else {
-        error =
-          field.id === "confirmPassword"
-            ? validate(field.id, trimmedValue, formData.password)
-            : validate(field.id, trimmedValue);
+        error = validate(field.id, trimmedValue, formData);
       }
       dispatch({ type: "SET_ERROR", payload: { [name]: error } });
     }
@@ -51,35 +50,25 @@ const FormCom = ({
   const validateField = (field, value) => {
     if (field.validate) {
       return field.validate(value, formData);
-    } else if (field.id === "confirmPassword") {
-      return validate(field.id, value, formData.password);
     } else {
-      return validate(field.id, value);
+      return validate(field.id, value, formData);
     }
   };
+
+  const resetFormData = () => {
+    dispatch(resetForm());
+  };
+
+  useEffect(() => {
+    return () => {
+      dispatch(resetForm());
+    };
+  }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     const newErrors = {};
     let isValid = true;
-
-    fields.forEach((field) => {
-      const value =
-        field.value !== undefined ? field.value : formData[field.id];
-      if (field.validate) {
-        const error = field.validate(value, formData);
-        if (error) {
-          newErrors[field.id] = error;
-          isValid = false;
-        }
-      } else {
-        const error = validateField(field, value);
-        if (error) {
-          newErrors[field.id] = error;
-          isValid = false;
-        }
-      }
-    });
 
     if (customValidation) {
       const customErrors = customValidation(formData);
@@ -87,14 +76,32 @@ const FormCom = ({
         Object.assign(newErrors, customErrors);
         isValid = false;
       }
+    } else {
+      fields.forEach((field) => {
+        const value =
+          field.value !== undefined ? field.value : formData[field.id];
+        if (field.validate) {
+          const error = field.validate(value, formData);
+          if (error) {
+            newErrors[field.id] = error;
+            isValid = false;
+          }
+        } else {
+          const error = validateField(field, value);
+          if (error) {
+            newErrors[field.id] = error;
+            isValid = false;
+          }
+        }
+      });
     }
+
     dispatch({ type: "REPLACE_ERROR", payload: newErrors });
 
     if (isValid) {
-      onSubmit(formData);
-      dispatch(resetForm());
+      onSubmit(formData, resetFormData);
     } else {
-      toast.error("Please fill out all the Details");
+      toast.error("Please accurately fill out all the details.");
     }
   };
 
@@ -149,26 +156,27 @@ const FormCom = ({
 
       case "radio":
         return (
-          <div className="form-field">
-            <div className="radio-group">
-              {field.options.map((opt) => {
-                const radioId = `${field.id}-${opt}`;
-                const isChecked =
-                  field.value === opt || formData[field.id] === opt;
-                return (
-                  <div key={opt} className="radio-option">
-                    <RadioCom
-                      id={radioId}
-                      text={opt}
-                      name={field.id}
-                      value={opt}
-                      onChange={field.onChange || handleChange}
-                      checked={isChecked}
-                    />
-                  </div>
-                );
-              })}
-            </div>
+          <div className={`form-field ${field.className}`}>
+            {field.options.map((opt, index) => {
+              const radioId = `${field.id}-${opt}`;
+              const isChecked =
+                field.value === opt || formData[field.id] === opt;
+              return (
+                <div
+                  key={`${opt}_ ${index}_${field?.id}`}
+                  className="radio-option"
+                >
+                  <RadioCom
+                    id={radioId}
+                    text={opt}
+                    name={field.id}
+                    value={opt}
+                    onChange={field.onChange || handleChange}
+                    checked={isChecked}
+                  />
+                </div>
+              );
+            })}
           </div>
         );
 
@@ -205,13 +213,15 @@ const FormCom = ({
 
       case "button":
         return (
-          <ButtonCom
-            type={field.type}
-            onClick={field.onClick}
-            disabled={field.disabled}
-          >
-            {field.name}
-          </ButtonCom>
+          <div className={`formBtn ${field?.className}`}>
+            <ButtonCom
+              type={field.type}
+              onClick={field.onClick}
+              disabled={field.disabled}
+            >
+              {field.name}
+            </ButtonCom>
+          </div>
         );
 
       case "file":
@@ -258,15 +268,7 @@ const FormCom = ({
         );
       })}
 
-      <div
-        style={{
-          textAlign: "center",
-          display: "flex",
-          justifyContent: "center",
-          gap: "10px",
-          margin: "10px 0px",
-        }}
-      >
+      <div className={`submit-btn-from ${cancelButtonClass}`}>
         {resetButton && (
           <ButtonCom
             type="reset"
