@@ -1,9 +1,9 @@
 import { useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
-import FormCom from "../../shared/FormCom";
 import Loader from "../../shared/Loader";
 import TeacherFormValidate from "./components/TeacherFormValidate";
 import "./css/teacher.css";
+import DynamicForm from "../../shared/DynamicForm";
 
 const CreateUpdateExamForm = () => {
   const exams = useSelector((state) => state.exams);
@@ -20,7 +20,7 @@ const CreateUpdateExamForm = () => {
           {isUpdateForm ? "Edit Exam" : "Create Exam"}
         </h1>
         <div className="teacherFormInner">
-          <FormCom
+          <DynamicForm
             fields={formFields}
             initialValues={examData}
             onSubmit={handleSubmit}

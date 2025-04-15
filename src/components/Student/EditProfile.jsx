@@ -2,13 +2,13 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import FormCom from "../../shared/FormCom";
 import Loader from "../../shared/Loader";
 import { putRequest } from "../../utils/api";
 import { getCookie } from "../../utils/getCookie";
 import { editProfileField } from "../../utils/staticObj";
 import AuthRoute from "../auth/AuthRoute";
 import "./css/student.css";
+import DynamicForm from "../../shared/DynamicForm";
 
 const EditProfile = () => {
   const navigate = useNavigate();
@@ -44,7 +44,7 @@ const EditProfile = () => {
         <p>Email: {user?.email}</p>
       </div>
       <hr className="horizontalRule" style={{ marginBottom:"10px"}} />
-      <FormCom
+      <DynamicForm
         fields={editProfileField}
         initialValues={{ name: user?.name }}
         onSubmit={handleRename}

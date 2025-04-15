@@ -1,13 +1,13 @@
 /* eslint-disable react-refresh/only-export-components */
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import FormCom from "../../shared/FormCom";
 import Loader from "../../shared/Loader";
 import { postRequest } from "../../utils/api";
 import { getCookie } from "../../utils/getCookie";
 import { ResetPasswordFields, resetPasswordObj } from "../../utils/staticObj";
 import AuthRoute from "./AuthRoute";
 import "./css/auth.css";
+import DynamicForm from "../../shared/DynamicForm";
 
 const ResetPassword = () => {
   const token = getCookie("authToken");
@@ -44,7 +44,7 @@ const ResetPassword = () => {
       <div className="resetPasswordInner">
         <h1 className="resetPassHeading">Reset password</h1>
         <br />
-        <FormCom
+        <DynamicForm
           fields={ResetPasswordFields}
           initialValues={resetPasswordObj}
           onSubmit={onSubmit}

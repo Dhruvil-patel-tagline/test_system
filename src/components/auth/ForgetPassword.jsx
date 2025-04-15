@@ -3,12 +3,12 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import ButtonCom from "../../shared/ButtonCom";
-import FormCom from "../../shared/FormCom";
 import Loader from "../../shared/Loader";
 import { postRequest } from "../../utils/api";
 import { forgotFields } from "../../utils/staticObj";
 import AuthRoute from "./AuthRoute";
 import "./css/auth.css";
+import DynamicForm from "../../shared/DynamicForm";
 
 const ForgetPassword = () => {
   const navigate = useNavigate();
@@ -37,7 +37,7 @@ const ForgetPassword = () => {
       {loading && <Loader />}
       <div className="authInnerDiv">
         <h1 className="authHeading">Forget Password</h1> <br />
-        <FormCom
+        <DynamicForm
           fields={forgotFields}
           initialValues={{ email: "" }}
           onSubmit={handleSubmit}

@@ -9,9 +9,9 @@ import DropDown from "./DropDown";
 import InputCom from "./InputCom";
 import InputPassword from "./InputPassword";
 import RadioCom from "./RadioCom";
-import "./css/formCom.css";
+import "./css/dynamicForm.css";
 
-const FormCom = ({
+const DynamicForm = ({
   fields,
   initialValues,
   onSubmit,
@@ -63,7 +63,7 @@ const FormCom = ({
     return () => {
       dispatch(resetForm());
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleSubmit = (e) => {
@@ -292,4 +292,4 @@ const FormCom = ({
   );
 };
 
-export default FormCom;
+export default DynamicForm;

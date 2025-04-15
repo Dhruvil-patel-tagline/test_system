@@ -1,12 +1,12 @@
 /* eslint-disable react-refresh/only-export-components */
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import FormCom from "../../shared/FormCom";
 import Loader from "../../shared/Loader";
 import { postRequest } from "../../utils/api";
 import { loginFields, userObj } from "../../utils/staticObj";
 import AuthRoute from "./AuthRoute";
 import "./css/auth.css";
+import DynamicForm from "../../shared/DynamicForm";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -32,7 +32,7 @@ const Login = () => {
       {loading && <Loader />}
       <div className="authInnerDiv">
         <h1 className="authHeading">Login </h1>
-        <FormCom
+        <DynamicForm
           fields={loginFields}
           initialValues={userObj}
           onSubmit={onSubmit}

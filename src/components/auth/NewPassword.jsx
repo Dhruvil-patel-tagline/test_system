@@ -2,12 +2,12 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import FormCom from "../../shared/FormCom";
 import Loader from "../../shared/Loader";
 import { getRequest, postRequest } from "../../utils/api";
 import { newPasswordFields, newPasswordInitial } from "../../utils/staticObj";
 import AuthRoute from "./AuthRoute";
 import "./css/auth.css";
+import DynamicForm from "../../shared/DynamicForm";
 
 const NewPassword = () => {
   const [searchParams] = useSearchParams();
@@ -58,7 +58,7 @@ const NewPassword = () => {
       {loading && <Loader />}
       <div className="authInnerDiv">
         <h1 className="authHeading">Reset password</h1>
-        <FormCom
+        <DynamicForm
           fields={newPasswordFields}
           initialValues={newPasswordInitial}
           onSubmit={onSubmit}

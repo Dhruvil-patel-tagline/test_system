@@ -2,12 +2,12 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import FormCom from "../../shared/FormCom";
 import Loader from "../../shared/Loader";
 import { postRequest } from "../../utils/api";
 import { fields, signUpUserObj } from "../../utils/staticObj";
 import AuthRoute from "./AuthRoute";
 import "./css/auth.css";
+import DynamicForm from "../../shared/DynamicForm";
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -32,7 +32,7 @@ const SignUp = () => {
       {loading && <Loader />}
       <div className="authInnerDiv">
         <h1 className="authHeading">SignUp </h1>
-        <FormCom
+        <DynamicForm
           fields={fields}
           initialValues={signUpUserObj}
           onSubmit={addUser}
