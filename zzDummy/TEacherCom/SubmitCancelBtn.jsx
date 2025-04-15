@@ -1,6 +1,6 @@
 import React from "react";
 import cancel from "../../../assets/cancel.png";
-import ButtonCom from "../../../shared/ButtonCom";
+import ButtonCom from "../../src/shared/ButtonCom";
 
 const SubmitCancelBtn = ({ isUpdateForm }) => {
   return (

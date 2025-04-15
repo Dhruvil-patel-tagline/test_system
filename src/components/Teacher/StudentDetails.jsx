@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import React, { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import Table from "../../shared/Table";

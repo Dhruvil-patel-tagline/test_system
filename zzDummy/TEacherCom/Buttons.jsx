@@ -1,8 +1,8 @@
 import React from "react";
 import left from "../../../assets/left.png";
 import right from "../../../assets/right.png";
-import ButtonCom from "../../../shared/ButtonCom";
-import { TOTAL_QUESTIONS } from "../../../utils/staticObj";
+import ButtonCom from "../../src/shared/ButtonCom";
+import { TOTAL_QUESTIONS } from "../../src/utils/staticObj";
 
 const Buttons = ({ currentQuestion, handleQuestionSave }) => {
   return (

@@ -12,11 +12,10 @@ import EditProfile from "../components/Student/EditProfile";
 import ExamForm from "../components/Student/ExamForm";
 import StudentResult from "../components/Student/StudentResult";
 import AllStudent from "../components/Teacher/AllStudent";
+import CreateUpdateExamForm from "../components/Teacher/CreateUpdateExamForm";
 import ExamDetail from "../components/Teacher/ExamDetail";
 import ExamList from "../components/Teacher/ExamList";
 import StudentDetails from "../components/Teacher/StudentDetails";
-// import TeacherForm from "../components/Teacher/TeacherForm";
-import NewForm from "../components/Teacher/NewForm";
 
 const router = createBrowserRouter(
   [
@@ -30,11 +29,7 @@ const router = createBrowserRouter(
         },
         {
           path: "createExam",
-          element: (
-            // <TeacherForm />
-            <NewForm />
-            // <TeacherForm2 />
-          ),
+          element: <CreateUpdateExamForm />,
         },
         {
           path: "students",
@@ -54,10 +49,7 @@ const router = createBrowserRouter(
         },
         {
           path: "updateExam/:id",
-          element: (
-            // <TeacherForm />
-            <NewForm />
-          ),
+          element: <CreateUpdateExamForm />,
         },
         {
           path: "profile",

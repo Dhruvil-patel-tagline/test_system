@@ -1,7 +1,7 @@
 import React from "react";
-import InputCom from "../../../shared/InputCom";
-import RadioCom from "../../../shared/RadioCom";
-import { uniqueOpt } from "../../../utils/validate";
+import InputCom from "../../src/shared/InputCom";
+import RadioCom from "../../src/shared/RadioCom";
+import { uniqueOpt } from "../../src/utils/validate";
 
 const Questions = ({
   examData,

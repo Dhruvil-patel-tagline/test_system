@@ -5,7 +5,7 @@ import Loader from "../../shared/Loader";
 import TeacherFormValidate from "./components/TeacherFormValidate";
 import "./css/teacher.css";
 
-const NewForm = () => {
+const CreateUpdateExamForm = () => {
   const exams = useSelector((state) => state.exams);
   const { state, pathname } = useLocation();
   const isUpdateForm = pathname.includes("updateExam");
@@ -34,4 +34,4 @@ const NewForm = () => {
   );
 };
 
-export default NewForm;
+export default CreateUpdateExamForm;

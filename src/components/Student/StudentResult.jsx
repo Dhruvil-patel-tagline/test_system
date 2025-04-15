@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import { useEffect, useMemo } from "react";
 import { useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -64,6 +65,4 @@ const StudentResult = () => {
   );
 };
 
-export default AuthRoute({ requireAuth: true, allowedRoles: ["student"] })(
-  StudentResult,
-);
+export default AuthRoute({ requireAuth: true, allowedRoles: ["student"] })( StudentResult );

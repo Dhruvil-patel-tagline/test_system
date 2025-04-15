@@ -1,12 +1,12 @@
 // shared/ReusableForm.jsx
 import { Fragment, useState } from "react";
-import { dropObj } from "../utils/staticObj";
-import validate from "../utils/validate";
-import ButtonCom from "./ButtonCom";
-import DropDown from "./DropDown";
-import InputCom from "./InputCom";
-import InputPassword from "./InputPassword";
-import RadioCom from "./RadioCom";
+import { dropObj } from "../src/utils/staticObj";
+import validate from "../src/utils/validate";
+import ButtonCom from "../src/shared/ButtonCom";
+import DropDown from "../src/shared/DropDown";
+import InputCom from "../src/shared/InputCom";
+import InputPassword from "../src/shared/InputPassword";
+import RadioCom from "../src/shared/RadioCom";
 
 const DynamicForm = ({
   fields,
@@ -14,7 +14,6 @@ const DynamicForm = ({
   onSubmit,
   buttonText = "Submit",
   secondaryButton = null,
-  //   customValidation = null,
 }) => {
   const [formData, setFormData] = useState(initialValues || {});
   const [errors, setErrors] = useState({});

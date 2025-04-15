@@ -1,4 +1,4 @@
-import { regexEmail, regexName } from "./regex";
+import { regexEmail, regexName } from "../src/utils/regex";
 
 export const validateName = (name) => {
   if (!name.trim()) return "Name is required";

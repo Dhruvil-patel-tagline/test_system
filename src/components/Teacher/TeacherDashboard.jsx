@@ -25,4 +25,3 @@ const TeacherDashboard = () => {
 };
 
 export default AuthRoute({ requireAuth: true, allowedRoles: ['teacher'] })(TeacherDashboard);
-// export default TeacherDashboard;

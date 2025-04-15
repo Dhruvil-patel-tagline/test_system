@@ -63,6 +63,7 @@ const FormCom = ({
     return () => {
       dispatch(resetForm());
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleSubmit = (e) => {
