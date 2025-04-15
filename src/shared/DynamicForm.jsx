@@ -1,5 +1,7 @@
-import React from "react";
+import React, { Fragment } from "react";
 import { useDispatch } from "react-redux";
+import ButtonCom from "./ButtonCom";
+import "./css/dynamicForm.css";
 import ValidateDynamicForm from "./ValidateDynamicForm";
 
 const DynamicForm = ({
@@ -19,7 +21,7 @@ const DynamicForm = ({
       customValidation,
       onSubmit,
     });
-    
+
   return (
     <form onSubmit={handleSubmit} className="form">
       {fields.map((field) => {

@@ -5,7 +5,7 @@ const RadioCom = ({ text, name, value, onChange, checked }) => {
   const id = useId();
   return (
     <>
-      <div style={{margin:"10px 0px"}}>
+      <div style={{ margin: "10px 0px" }}>
         <input
           type="radio"
           className="radio"
@@ -15,7 +15,7 @@ const RadioCom = ({ text, name, value, onChange, checked }) => {
           onChange={onChange}
           value={value}
         />
-        <label htmlFor={id} style={{ marginLeft: "5px", cursor: 'pointer' }}>
+        <label htmlFor={id} style={{ marginLeft: "5px", cursor: "pointer" }}>
           {text}
         </label>
       </div>

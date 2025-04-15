@@ -1,9 +1,15 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { resetForm } from "../redux/action/resetForm";
 import { dropObj } from "../utils/staticObj";
 import validate from "../utils/validate";
+import ButtonCom from "./ButtonCom";
+import DropDown from "./DropDown";
+import InputCom from "./InputCom";
+import InputPassword from "./InputPassword";
+import RadioCom from "./RadioCom";
 
 const ValidateDynamicForm = ({
   resetButton,
@@ -19,22 +25,20 @@ const ValidateDynamicForm = ({
 
   useEffect(() => {
     dispatch({ type: "SET_DATA", payload: initialValues });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialValues]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    const trimmedValue =
-      value && typeof value === "string" ? value.trim() : value;
-    dispatch({ type: "SET_DATA", payload: { [name]: trimmedValue } });
+
+    dispatch({ type: "SET_DATA", payload: { [name]: value } });
     const field = fields.find((f) => f.id === name);
 
     if (field && errors[field.id]) {
       let error = null;
       if (field.validate) {
-        error = field.validate(trimmedValue, formData);
+        error = field.validate(value, formData);
       } else {
-        error = validate(field.id, trimmedValue, formData);
+        error = validate(field.id, value, formData);
       }
       dispatch({ type: "SET_ERROR", payload: { [name]: error } });
     }
@@ -56,7 +60,6 @@ const ValidateDynamicForm = ({
     return () => {
       dispatch(resetForm());
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleSubmit = (e) => {
