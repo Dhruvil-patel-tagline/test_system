@@ -9,8 +9,8 @@ import ButtonCom from "../../shared/ButtonCom";
 import Table from "../../shared/Table";
 import { getCookie } from "../../utils/getCookie";
 import { examDetailHeader } from "../../utils/staticObj";
-import "./css/teacher.css";
 import AuthRoute from "../auth/AuthRoute";
+import "./css/teacher.css";
 
 const ExamDetail = () => {
   const dispatch = useDispatch();
@@ -30,6 +30,16 @@ const ExamDetail = () => {
         questions: examListObj.quesArray || [],
       },
     });
+    dispatch({
+      type: "SET_DATA",
+      payload: {
+        subjectName: state?.subject || "",
+        notes: state?.notes || ["", ""],
+        examId: id,
+        currentQ: index,
+        questions: examListObj.quesArray || [],
+      },
+    });
   };
 
   useEffect(() => {
@@ -39,18 +49,18 @@ const ExamDetail = () => {
   const tableData = useMemo(() => {
     return examListObj?.quesArray?.length
       ? examListObj?.quesArray?.map((q, index) => ({
-        Index: index + 1,
-        Question: q?.question,
-        Answer: q?.answer,
-        Action: (
-          <ButtonCom onClick={() => handleEdit(index)}>
-            <span className="bntIcon">
-              <img src={edit} width="18px" height="18px" />
-              Edit
-            </span>
-          </ButtonCom>
-        ),
-      }))
+          Index: index + 1,
+          Question: q?.question,
+          Answer: q?.answer,
+          Action: (
+            <ButtonCom onClick={() => handleEdit(index)}>
+              <span className="bntIcon">
+                <img src={edit} width="18px" height="18px" />
+                Edit
+              </span>
+            </ButtonCom>
+          ),
+        }))
       : [];
   }, [examListObj]);
 
@@ -69,4 +79,6 @@ const ExamDetail = () => {
   );
 };
 
-export default AuthRoute({ requireAuth: true, allowedRoles: ["teacher"] })(ExamDetail);
+export default AuthRoute({ requireAuth: true, allowedRoles: ["teacher"] })(
+  ExamDetail,
+);

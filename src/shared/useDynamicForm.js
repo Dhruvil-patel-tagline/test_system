@@ -58,7 +58,6 @@ const useDynamicForm = ({
       fields.forEach((field) => {
         const value =
           field.value !== undefined ? field.value : formData[field.id];
-
         const error = field.validate
           ? field.validate(value, formData)
           : validate(field.id, value, formData);

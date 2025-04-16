@@ -8,16 +8,16 @@ import TeacherFormValidate from "./components/TeacherFormValidate";
 import "./css/teacher.css";
 
 const CreateUpdateExamForm = () => {
-  const exams = useSelector((state) => state.exams);
-  const { state, pathname } = useLocation();
+  const loading = useSelector((state) => state.exams.loading);
+  const { pathname } = useLocation();
   const isUpdateForm = pathname.includes("updateExam");
   const { customValidation, handleSubmit, resetForm, examData, formFields } =
-    TeacherFormValidate({ isUpdateForm, state });
+    TeacherFormValidate({ isUpdateForm });
 
   return (
     <div>
       <div style={{ paddingTop: "20px" }}>
-        {exams?.loading && <Loader />}
+        {loading && <Loader />}
         <h1 className="teacherFormHeading">
           {isUpdateForm ? "Edit Exam" : "Create Exam"}
         </h1>

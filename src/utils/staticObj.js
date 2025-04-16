@@ -1,3 +1,5 @@
+import validate from "./validate";
+
 export const errorObj = {
   email: null,
   password: null,
