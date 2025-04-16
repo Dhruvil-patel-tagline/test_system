@@ -1,26 +1,20 @@
-.active {
-  color: gray;
-  border-bottom: 2px solid blue;
-}
+
 
 .activeStatus {
   background-color: green;
   border-radius: 15px;
-  padding: 5px 20px;
+  display: inline-block;
+  padding: 5px 0px;
+  width: 90px;
 }
 
 .pendingStatus {
-  background-color: rgb(176, 176, 80);
-  border-radius: 15px;
-  color: black;
-  padding: 5px 20px;
+  background-color: rgb(113, 113, 46);
+  border-radius: 15px;  display: inline-block;
+  padding: 5px 0px;
+  width: 90px;
 }
 
-.allStudentCtn {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
 
 .allStudentInner {
   display: flex;
@@ -29,6 +23,7 @@
   width: 100%;
   max-width: 700px;
   padding: 20px;
+  margin: 0px auto;
   gap: 20px;
 }
 

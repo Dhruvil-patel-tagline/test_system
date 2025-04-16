@@ -2,9 +2,9 @@
 import { useNavigate } from "react-router-dom";
 import add from "../../assets/add.svg";
 import ButtonCom from "../../shared/ButtonCom";
+import AuthRoute from "../auth/AuthRoute";
 import ExamList from "./ExamList";
 import "./css/teacher.css";
-import AuthRoute from "../auth/AuthRoute";
 
 const TeacherDashboard = () => {
   const navigate = useNavigate();
@@ -24,4 +24,6 @@ const TeacherDashboard = () => {
   );
 };
 
-export default AuthRoute({ requireAuth: true, allowedRoles: ['teacher'] })(TeacherDashboard);
+export default AuthRoute({ requireAuth: true, allowedRoles: ["teacher"] })(
+  TeacherDashboard,
+);

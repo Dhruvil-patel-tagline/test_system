@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -7,9 +8,9 @@ import ButtonCom from "../../shared/ButtonCom";
 import Table from "../../shared/Table";
 import { getCookie } from "../../utils/getCookie";
 import { allStudentHeader } from "../../utils/staticObj";
+import AuthRoute from "../auth/AuthRoute";
 import "./css/slider.css";
 import "./css/teacher.css";
-import AuthRoute from "../auth/AuthRoute";
 
 const AllStudent = () => {
   const navigate = useNavigate();
@@ -65,7 +66,7 @@ const AllStudent = () => {
   }, [allStudent, allStudentArray]);
 
   return (
-    <div className="allStudentCtn">
+    <div>
       <div className="allStudentInner">
         <h1 style={{ textAlign: "center", color: "rgb(18, 219, 206)" }}>
           {allStudent ? "All Students" : "Verified Students"}
@@ -78,15 +79,19 @@ const AllStudent = () => {
           </label>
         </div>
       </div>
-      <Table
-        tableHeader={allStudentHeader}
-        tableData={tableData}
-        minWidth={"900px"}
-        isLoading={allStudentArray?.loading}
-        error={allStudentArray?.error}
-      />
+      <div style={{ maxWidth: "1000px", margin: "0px auto", width: "100%" }}>
+        <Table
+          tableHeader={allStudentHeader}
+          tableData={tableData}
+          minWidth={"900px"}
+          isLoading={allStudentArray?.loading}
+          error={allStudentArray?.error}
+        />
+      </div>
     </div>
   );
 };
 
-export default AuthRoute({ requireAuth: true, allowedRoles: ["teacher"] })(AllStudent);
+export default AuthRoute({ requireAuth: true, allowedRoles: ["teacher"] })(
+  AllStudent,
+);

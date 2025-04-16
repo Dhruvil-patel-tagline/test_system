@@ -42,7 +42,11 @@ const Table = ({ tableHeader, tableData, isLoading, minWidth, error }) => {
             ))
           ) : (
             <tr>
-              <td colSpan={tableHeader.length} className="no-data">
+              <td
+                colSpan={tableHeader.length}
+                className="no-data"
+                style={{ color: "red" }}
+              >
                 Data not found
               </td>
             </tr>

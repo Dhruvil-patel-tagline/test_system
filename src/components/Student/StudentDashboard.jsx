@@ -8,8 +8,8 @@ import ButtonCom from "../../shared/ButtonCom";
 import Table from "../../shared/Table";
 import { getCookie } from "../../utils/getCookie";
 import { studentDashboardHeader } from "../../utils/staticObj";
-import "./css/student.css";
 import AuthRoute from "../auth/AuthRoute";
+import "./css/student.css";
 
 const StudentDashboard = () => {
   const token = getCookie("authToken");
@@ -82,6 +82,8 @@ const StudentDashboard = () => {
   );
 };
 
- export default AuthRoute({ requireAuth: true, allowedRoles: ['student'] })(StudentDashboard);
+export default AuthRoute({ requireAuth: true, allowedRoles: ["student"] })(
+  StudentDashboard,
+);
 
 // export default StudentDashboard;

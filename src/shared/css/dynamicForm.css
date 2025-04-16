@@ -1,9 +1,9 @@
-.submit-btn-from{
-    text-align: center;
+.submit-btn-from {
+  text-align: center;
 }
 
-.resetButton{
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
+.resetButton {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
 }

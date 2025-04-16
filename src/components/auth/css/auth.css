@@ -16,6 +16,9 @@
 
 .authInnerDiv {
   border: 1px solid gray;
+  border-left: 2px solid rgb(18, 219, 206);
+  box-shadow: -10px 0px 15px -10px rgb(18, 219, 206);
+
   padding: 30px;
   background-color: rgba(0, 0, 0, 0.5);
   max-width: 600px;
@@ -55,6 +58,9 @@
   width: 100%;
   padding: 20px;
   border: 1px solid gray;
+  border-left: 2px solid rgb(18, 219, 206);
+  box-shadow: -10px 0px 15px -10px rgb(18, 219, 206);
+
   border-radius: 10px;
   margin: 20px;
 }
