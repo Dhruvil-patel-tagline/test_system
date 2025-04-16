@@ -1,24 +1,21 @@
 import { createBrowserRouter } from "react-router-dom";
+import Profile from "../../zzDummy/Profile";
 import ForgetPassword from "../components/auth/ForgetPassword";
 import Login from "../components/auth/Login";
 import NewPassword from "../components/auth/NewPassword";
 import ResetPassword from "../components/auth/ResetPassword";
 import SignUp from "../components/auth/SignUp";
+import Dashboard from "../components/pages/Dashboard";
 import Home from "../components/pages/Home";
 import PageNotFound from "../components/pages/PageNotFound";
 import EditProfile from "../components/Student/EditProfile";
 import ExamForm from "../components/Student/ExamForm";
-import StudentDashboard from "../components/Student/StudentDashboard";
-import StudentProfile from "../components/Student/StudentProfile";
 import StudentResult from "../components/Student/StudentResult";
 import AllStudent from "../components/Teacher/AllStudent";
 import CreateUpdateExamForm from "../components/Teacher/CreateUpdateExamForm";
 import ExamDetail from "../components/Teacher/ExamDetail";
 import ExamList from "../components/Teacher/ExamList";
 import StudentDetails from "../components/Teacher/StudentDetails";
-import TeacherDashboard from "../components/Teacher/TeacherDashboard";
-import { getCookie } from "../utils/getCookie";
-const user = getCookie("authUser");
 
 const router = createBrowserRouter(
   [
@@ -28,12 +25,7 @@ const router = createBrowserRouter(
       children: [
         {
           path: "dashboard",
-          element:
-            user?.role === "teacher" ? (
-              <TeacherDashboard />
-            ) : (
-              <StudentDashboard />
-            ),
+          element: <Dashboard />,
         },
         {
           path: "createExam",
@@ -61,8 +53,7 @@ const router = createBrowserRouter(
         },
         {
           path: "profile",
-          element:
-            user?.role === "student" ? <StudentProfile /> : <ResetPassword />,
+          element: <Profile />,
           children: [
             {
               path: "editName",

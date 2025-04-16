@@ -1,9 +1,11 @@
+/* eslint-disable react-refresh/only-export-components */
 import { useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
+import DynamicForm from "../../shared/DynamicForm";
 import Loader from "../../shared/Loader";
+import AuthRoute from "../auth/AuthRoute";
 import TeacherFormValidate from "./components/TeacherFormValidate";
 import "./css/teacher.css";
-import DynamicForm from "../../shared/DynamicForm";
 
 const CreateUpdateExamForm = () => {
   const exams = useSelector((state) => state.exams);
@@ -34,4 +36,6 @@ const CreateUpdateExamForm = () => {
   );
 };
 
-export default CreateUpdateExamForm;
+export default AuthRoute({ requireAuth: true, allowedRoles: ["teacher"] })(
+  CreateUpdateExamForm,
+);
