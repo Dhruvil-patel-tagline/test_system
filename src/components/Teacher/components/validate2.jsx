@@ -1,3 +1,5 @@
+
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useCallback, useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -13,63 +15,43 @@ import validate, { uniqueOpt } from "../../../utils/validate";
 const TeacherFormValidate = ({ isUpdateForm }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const formDataState = useSelector((state) => state.formData || {});
+  const formData = useSelector((state) => state.formData);
   const {
     currentQ = 0,
     examId,
-    notes = ["", ""],
-    questions = Array(TOTAL_QUESTIONS)
-      .fill()
-      .map(() => ({
-        question: "",
-        answer: "",
-        options: ["", "", "", ""],
-      })),
+    notes = [],
+    questions = [],
     subjectName = "",
-  } = formDataState.formData || {};
+    errors = {
+      error: teacherErrorObj,
+      allQuestionError: Array(TOTAL_QUESTIONS).fill(false),
+      questionsError: questionsErrorObj,
+    },
+  } = formData.formData;
 
-  const errors = useMemo(
-    () => ({
-      error: formDataState.errors?.error || teacherErrorObj,
-      allQuestionError:
-        formDataState.errors?.allQuestionError ||
-        Array(TOTAL_QUESTIONS).fill(false),
-      questionsError: formDataState.errors?.questionsError || questionsErrorObj,
-    }),
-    [formDataState.errors],
-  );
   const token = getCookie("authToken");
+  // const [currentQuestion, setCurrentQuestion] = useState(currentQ || 0);
+  // const [allQuestionError, setAllQuestionError] = useState(
+  //   Array(TOTAL_QUESTIONS).fill(false),
+  // );
 
-  // useEffect(() => {
-  //   if (!formDataState.formData) {
-  //     dispatch({
-  //       type: "SET_DATA",
-  //       payload: {
-  //         currentQ: 0,
-  //         subjectName: "",
-  //         questions: Array(TOTAL_QUESTIONS)
-  //           .fill()
-  //           .map(() => ({
-  //             question: "",
-  //             answer: "",
-  //             options: ["", "", "", ""],
-  //           })),
-  //         notes: ["", ""],
-  //       },
-  //     });
-  //   }
+  // const [questionsError, setQuestionsError] = useState(questionsErrorObj);
 
-  //   if (!formDataState.errors) {
-  //     dispatch({
-  //       type: "SET_ERROR",
-  //       payload: {
-  //         error: teacherErrorObj,
-  //         allQuestionError: Array(TOTAL_QUESTIONS).fill(false),
-  //         questionsError: questionsErrorObj,
-  //       },
-  //     });
-  //   }
-  // }, []);
+  // const [error, setError] = useState(teacherErrorObj);
+
+  // const [examData, setExamData] = useState({
+  //   subjectName: state?.subject || "",
+  //   questions:
+  //     state?.questions ||
+  //     Array(TOTAL_QUESTIONS)
+  //       .fill()
+  //       .map(() => ({
+  //         question: "",
+  //         answer: "",
+  //         options: ["", "", "", ""],
+  //       })),
+  //   notes: state?.notes || ["", ""],
+  // });
 
   const isDuplicateQuestion = useCallback(
     (index, value) => {
@@ -110,6 +92,7 @@ const TeacherFormValidate = ({ isUpdateForm }) => {
         errorObj.answerError = "Answer is required";
       }
 
+      // setQuestionsError(errorObj);
       dispatch({
         type: "SET_ERROR",
         payload: { questionsError: errorObj },
@@ -128,105 +111,108 @@ const TeacherFormValidate = ({ isUpdateForm }) => {
       const { name, value } = e.target;
       dispatch({
         type: "SET_DATA",
-        payload: { subjectName: value },
+        payload: {
+          ...formData,
+          formData: { ...formData.formData, subjectName: value },
+        },
       });
+      // setExamData((prev) => ({ ...prev, [name]: value }));
+      let SubjectError = validate(value, name);
+      // setError((prev) => ({
+      //   ...prev,
+      //   subjectError: error,
+      // }));
 
-      let subjectError = validate(value, name);
       dispatch({
         type: "SET_ERROR",
-        payload: { error: { ...errors.error, subjectName: subjectError } },
+        payload: { error: { ...errors.error, subjectError: SubjectError } },
       });
     },
-    [errors.error],
+    [errors.error, formData],
   );
 
   const handleQuestionChange = useCallback(
     (e) => {
       const value = e.target.value;
       const updatedQuestions = [...questions];
-      updatedQuestions[currentQ] = {
-        ...updatedQuestions[currentQ],
-        question: value,
-      };
-
+      updatedQuestions[currentQ].question = value;
+      // setExamData((prev) => ({ ...prev, questions: updatedQuestions }));
       dispatch({
         type: "SET_DATA",
-        payload: { questions: updatedQuestions },
+        payload: {
+          ...formData,
+          formData: { ...formData.formData, questions: updatedQuestions },
+        },
       });
 
       let error = !value?.trim()
         ? "Question cannot be empty"
         : isDuplicateQuestion(currentQ || 0, value)
           ? "Duplicate question not allowed"
-          : "";
-
+          : null;
+      // setQuestionsError((prev) => ({ ...prev, questionError: error }));
       dispatch({
         type: "SET_ERROR",
         payload: {
-          questionsError: {
-            ...errors.questionsError,
-            questionError: error,
-          },
+          questionsError: { ...errors.questionError, questionError: error },
         },
       });
     },
-    [questions, currentQ, isDuplicateQuestion, errors.questionsError],
+    [questions, currentQ, formData, isDuplicateQuestion, errors.questionError],
   );
 
   const handleAnswerChange = useCallback(
     (e) => {
       const value = e.target.value;
       const updatedQuestions = [...questions];
-      updatedQuestions[currentQ] = {
-        ...updatedQuestions[currentQ],
-        answer: value,
-      };
+      updatedQuestions[currentQ].answer = value;
+      // setExamData((prev) => ({ ...prev, questions: updatedQuestions }));
       dispatch({
         type: "SET_DATA",
-        payload: { questions: updatedQuestions },
+        payload: {
+          ...formData,
+          formData: { ...formData.formData, questions: updatedQuestions },
+        },
       });
       let error = validate("Answer", value);
+      // setQuestionsError((prev) => ({ ...prev, answerError: error }));
       dispatch({
         type: "SET_ERROR",
         payload: {
-          questionsError: { ...errors.questionsError, answerError: error },
+          questionsError: { ...errors.questionError, answerError: error },
         },
       });
     },
-    [currentQ, errors.questionsError, questions],
+    [currentQ, errors.questionError, formData, questions],
   );
 
   const handelOptionChange = useCallback(
     (e, idx) => {
       const value = e.target.value;
       const updatedQuestions = [...questions];
-      updatedQuestions[currentQ] = {
-        ...updatedQuestions[currentQ],
-        options: updatedQuestions[currentQ].options.map((opt, i) =>
-          i === idx ? value : opt,
-        ),
-        answer: "",
-      };
-
+      updatedQuestions[currentQ].options[idx] = value;
+      updatedQuestions[currentQ].answer = "";
+      // setExamData((prev) => ({ ...prev, questions: updatedQuestions }));
       dispatch({
         type: "SET_DATA",
-        payload: { questions: updatedQuestions },
+        payload: {
+          formData: { ...formData.formData, questions: updatedQuestions },
+        },
       });
-
       let error = !value?.trim()
         ? "Option can not be empty"
         : !uniqueOpt(updatedQuestions[currentQ].options)
           ? "Same option not allowed"
-          : "";
-
+          : null;
+      // setQuestionsError((prev) => ({ ...prev, optionsError: error }));
       dispatch({
         type: "SET_ERROR",
         payload: {
-          questionsError: { ...errors.questionsError, optionsError: error },
+          questionsError: { ...errors.questionError, optionsError: error },
         },
       });
     },
-    [currentQ, errors.questionsError, questions],
+    [currentQ, errors.questionError, formData.formData, questions],
   );
 
   const handleNoteChange = useCallback(
@@ -234,17 +220,21 @@ const TeacherFormValidate = ({ isUpdateForm }) => {
       const value = e.target.value;
       const updatedNotes = [...notes];
       updatedNotes[idx] = value;
+      // setExamData((prev) => ({ ...prev, notes: updatedNotes }));
       dispatch({
         type: "SET_DATA",
-        payload: { notes: updatedNotes },
+        payload: {
+          formData: { ...formData.formData, notes: updatedNotes },
+        },
       });
       let noteError = validate("Note", value);
+      // setError((prev) => ({ ...prev, noteError: noteError }));
       dispatch({
         type: "SET_ERROR",
-        payload: { error: { ...errors.error, note0: noteError } },
+        payload: { error: { ...errors.error, noteError: noteError } },
       });
     },
-    [errors.error, notes],
+    [errors.error, formData.formData, notes],
   );
 
   const handleQuestionSave = useCallback(
@@ -254,132 +244,113 @@ const TeacherFormValidate = ({ isUpdateForm }) => {
         allQue = errors.allQuestionError.map((val, arrIndex) =>
           arrIndex === index ? true : val,
         );
+        // setAllQuestionError(allQue);
         dispatch({
           type: "SET_ERROR",
-          payload: {
-            allQuestionError: allQue,
-          },
+          payload: { allQuestionError: allQue },
         });
-
-        if (page) {
+        page &&
           dispatch({
             type: "SET_DATA",
             payload: {
               currentQ: page === "previous" ? currentQ - 1 : currentQ + 1,
             },
           });
-        }
+        // page &&
+        //   setCurrentQuestion(page === "previous" ? currentQ - 1 : currentQ + 1);
       } else {
         allQue = errors.allQuestionError.map((val, arrIndex) =>
           arrIndex === index ? false : val,
         );
+        // setAllQuestionError(allQue);
         dispatch({
           type: "SET_ERROR",
-          payload: {
-            allQuestionError: allQue,
-          },
+          payload: { allQuestionError: allQue },
         });
       }
       if (allQue) {
-        if (allQue.every((val) => val)) {
+        // allQue.every((val) => val) && setError({ ...error, queError: null });
+        allQue.every((val) => val) &&
           dispatch({
             type: "SET_ERROR",
             payload: { error: { ...errors.error, queError: null } },
           });
-        }
       }
-
       return allQue;
     },
-    [errors.allQuestionError, currentQ, handleQueValidate, errors.error],
+    [errors.allQuestionError, currentQ, handleQueValidate],
   );
 
   const customValidation = () => {
     let result = handleQuestionSave(currentQ);
-
-    const errorObj = { error: {}, allQuestionsError: {}, questionsError: {} };
-
-    if (!subjectName?.trim()) {
-      errorObj.error.subjectName = "Subject name is required";
+    const errorObj = {};
+    if (subjectName?.trim()) {
+      errorObj.subjectName = "Subject name is required";
+    }
+    const currentQ = questions[currentQ];
+    if (!currentQ?.question?.trim()) {
+      errorObj[`question-${currentQ}`] = "Question cannot be empty";
+    } else if (isDuplicateQuestion(currentQ, currentQ.question)) {
+      errorObj[`question-${currentQ}`] = "Duplicate question not allowed";
     }
 
-    const currentQuestion = questions[currentQ];
-    if (!currentQuestion?.question?.trim()) {
-      errorObj.questionsError.questionError = "Question cannot be empty";
-    } else if (isDuplicateQuestion(currentQ, currentQuestion.question)) {
-      errorObj.questionsError.questionError = "Duplicate question not allowed";
-    }
-
-    const hasEmptyOption = currentQuestion?.options?.some(
-      (opt) => !opt?.trim(),
-    );
+    const hasEmptyOption = currentQ?.options?.some((opt) => !opt?.trim());
     if (hasEmptyOption) {
-      errorObj.questionsError.optionsError =
+      errorObj[`option-${currentQ}-0`] =
         "4 options are required for each question";
-    } else if (
-      currentQuestion?.options &&
-      !uniqueOpt(currentQuestion.options)
-    ) {
-      errorObj.questionsError.optionsError = "Same option not allowed";
+    } else if (currentQ?.options && !uniqueOpt(currentQ.options)) {
+      errorObj[`option-${currentQ}-0`] = "Same option not allowed";
     }
 
-    if (!currentQuestion?.answer?.trim()) {
-      errorObj.questionsError.answerError = "Answer is required";
+    if (!currentQ?.answer?.trim()) {
+      errorObj[`answer-${currentQ}`] = "Answer is required";
     }
 
     if (!notes?.every((note) => note?.trim())) {
-      errorObj.error.note0 = "Notes are required";
+      errorObj.note0 = "Notes are required";
     } else if (notes[0]?.trim() === notes[1]?.trim()) {
-      errorObj.error.note0 = "Notes can not be same";
+      errorObj.note0 = "Notes can not be same";
+    }
+    if (!result.every((val) => val)) {
+      errorObj.queError = "all 15  question are required";
     }
 
-    if (result && !result.every((val) => val)) {
-      errorObj.allQuestionsError = "all 15 question are required";
-    }
-
-    if (Object.keys(errorObj).length > 0) {
-      // dispatch(({
-      //   type: "SET_ERROR",
-      //   payload: { ...errors.error }
-      // }))
-      dispatch({
-        type: "SET_ERROR",
-        payload: { error: errorObj.error },
-      });
-      dispatch({
-        type: "SET_ERROR",
-        payload: { questionError: errorObj.questionsError },
-      });
-      // if (errorObj.error.subjectName) {
-      //   dispatch({
-      //     type: "SET_ERROR",
-      //     payload: {
-      //       error: { ...errors.error, subjectError: errorObj.subjectName },
-      //     },
-      //   });
-      // }
-
-      // dispatch({
-      //   type: "SET_ERROR",
-      //   payload: {
-      //     questionsError: {
-      //       questionError: errorObj[`question-${currentQ}`] || "",
-      //       optionsError: errorObj[`option-${currentQ}-0`] || "",
-      //       answerError: errorObj[`answer-${currentQ}`] || "",
-      //     },
-      //   },
+    if (Object.keys(errors).length > 0) {
+      if (errorObj.subjectName) {
+        // setError((prev) => ({ ...prev, subjectError: errors.subjectName }));
+        dispatch({
+          type: "SET_ERROR",
+          payload: {
+            error: { ...errors.error, subjectError: errorObj.subjectName },
+          },
+        });
+      }
+      // setQuestionsError({
+      //   questionError: errors[`question-${currentQ}`] || "",
+      //   optionsError: errors[`option-${currentQ}-0`] || "",
+      //   answerError: errors[`answer-${currentQ}`] || "",
       // });
-
-      // if (errorObj.note0) {
-      //   dispatch({
-      //     type: "SET_ERROR",
-      //     payload: {
-      //       error: { ...errors.error, noteError: errorObj.note0 },
-      //     },
-      //   });
-      // }
+      dispatch({
+        type: "SET_ERROR",
+        payload: {
+          questionsError: {
+            questionError: errors[`question-${currentQ}`] || "",
+            optionsError: errors[`option-${currentQ}-0`] || "",
+            answerError: errors[`answer-${currentQ}`] || "",
+          },
+        },
+      });
+      if (errors.note0) {
+        // setError((prev) => ({ ...prev, noteError: errors.note0 }));
+        dispatch({
+          type: "SET_ERROR",
+          payload: {
+            error: { ...errors.error, subjectError: errorObj.note0 },
+          },
+        });
+      }
     }
-    return result.every((val) => val);
+    return errorObj;
   };
 
   const handleSubmit = () => {
@@ -393,40 +364,68 @@ const TeacherFormValidate = ({ isUpdateForm }) => {
   };
 
   const resetForm = () => {
+    // setExamData({
+    //   subjectName: "",
+    //   questions: Array(TOTAL_QUESTIONS)
+    //     .fill()
+    //     .map(() => ({
+    //       question: "",
+    //       answer: "",
+    //       options: ["", "", "", ""],
+    //     })),
+    //   notes: ["", ""],
+    // });
     dispatch({
       type: "SET_DATA",
       payload: {
-        subjectName: "",
-        questions: Array(TOTAL_QUESTIONS)
-          .fill()
-          .map(() => ({
-            question: "",
-            answer: "",
-            options: ["", "", "", ""],
-          })),
-        notes: ["", ""],
-        currentQ: 0,
+        formData: {
+          subjectName: "",
+          questions: Array(TOTAL_QUESTIONS)
+            .fill()
+            .map(() => ({
+              question: "",
+              answer: "",
+              options: ["", "", "", ""],
+            })),
+          notes: ["", ""],
+        },
       },
     });
 
+    // setQuestionsError(questionsErrorObj);
     dispatch({
       type: "SET_ERROR",
+      payload: { questionsError: questionsErrorObj },
+    });
+    // setAllQuestionError(Array(TOTAL_QUESTIONS).fill(false));
+    dispatch({
+      type: "SET_ERROR",
+      payload: { allQuestionError: Array(TOTAL_QUESTIONS).fill(false) },
+    });
+    // setError(teacherErrorObj);
+    dispatch({
+      type: "SET_ERROR",
+      payload: { error: {} },
+    });
+    // setCurrentQuestion(0);
+    dispatch({
+      type: "SET_DATA",
       payload: {
-        questionsError: questionsErrorObj,
-        allQuestionError: Array(TOTAL_QUESTIONS).fill(false),
-        error: teacherErrorObj,
+        ...formData,
+        currentQ: 0,
       },
     });
   };
 
   useEffect(() => {
-    if (examId) {
+    if (questions) {
+      // setAllQuestionError(Array(TOTAL_QUESTIONS).fill(true));
       dispatch({
         type: "SET_ERROR",
         payload: { allQuestionError: Array(TOTAL_QUESTIONS).fill(true) },
       });
     }
-  }, [examId]);
+  }, [isUpdateForm, questions]);
 
   const formFields = useMemo(() => {
     const currentQuestion = questions[currentQ] || {
@@ -442,31 +441,31 @@ const TeacherFormValidate = ({ isUpdateForm }) => {
         input: "input",
         placeholder: "Subject Name",
         value: subjectName,
-        error: errors?.error?.subjectName,
+        error: errors?.error?.subjectError,
         onChange: (e) => {
           handleSubjectChange(e);
         },
       },
       {
-        id: `question-${currentQ}`,
+        id: `question-${currentQuestion}`,
         type: "text",
-        name: `Question: ${currentQ + 1} / ${TOTAL_QUESTIONS}`,
+        name: `Question: ${currentQuestion + 1} / ${TOTAL_QUESTIONS}`,
         input: "input",
         placeholder: "Enter question",
         value: currentQuestion.question || "",
-        error: errors.questionsError?.questionError || "",
+        error: errors.questionsError.questionError,
         onChange: (e) => {
           handleQuestionChange(e);
         },
       },
       ...(currentQuestion.options || []).map((opt, idx) => ({
-        id: `option-${currentQ}-${idx}`,
+        id: `option-${currentQuestion}-${idx}`,
         type: "text",
         name: `Options`,
         input: "input",
         placeholder: `Option ${idx + 1}`,
         value: opt || "",
-        error: errors.questionsError?.optionsError || "",
+        error: errors.questionsError.optionsError,
         noText: true,
         onChange: (e) => {
           handelOptionChange(e, idx);
@@ -479,10 +478,9 @@ const TeacherFormValidate = ({ isUpdateForm }) => {
         noLabel: true,
         input: "radio",
         options:
-          (currentQuestion.options || []).filter((opt) => opt?.trim() !== "") ||
-          [],
-        value: currentQuestion.answer || "",
-        error: errors.questionsError?.answerError || "",
+          (currentQ.options || []).filter((opt) => opt?.trim() !== "") || [],
+        value: currentQ.answer || "",
+        error: errors.questionsError.answerError,
         onChange: (e) => {
           handleAnswerChange(e);
         },
@@ -495,17 +493,17 @@ const TeacherFormValidate = ({ isUpdateForm }) => {
         input: "button",
         noText: true,
         onClick: () => {
-          handleQuestionSave(currentQ, "previous");
+          handleQuestionSave(currentQuestion, "previous");
         },
-        disabled: currentQ === 0,
+        disabled: currentQuestion === 0,
       },
       {
         type: "button",
         noText: true,
         onClick: () => {
-          handleQuestionSave(currentQ, "next");
+          handleQuestionSave(currentQuestion, "next");
         },
-        disabled: currentQ === TOTAL_QUESTIONS - 1,
+        disabled: currentQuestion === TOTAL_QUESTIONS - 1,
         name: "Next",
         input: "button",
         id: "next",
@@ -518,7 +516,7 @@ const TeacherFormValidate = ({ isUpdateForm }) => {
         input: "input",
         placeholder: `Note ${idx + 1}`,
         value: note || "",
-        error: errors?.error?.note0 || "",
+        error: errors?.error?.noteError,
         noText: true,
         onChange: (e) => {
           handleNoteChange(e, idx);
@@ -527,7 +525,6 @@ const TeacherFormValidate = ({ isUpdateForm }) => {
     ];
   }, [
     questions,
-    currentQ,
     subjectName,
     errors,
     notes,
@@ -543,7 +540,7 @@ const TeacherFormValidate = ({ isUpdateForm }) => {
     customValidation,
     handleSubmit,
     resetForm,
-    formData: formDataState,
+    formData,
     formFields,
   };
 };

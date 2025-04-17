@@ -44,18 +44,17 @@ const useDynamicForm = ({
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const newErrors = {};
     let isValid = true;
 
     if (customValidation) {
       const customErrors = customValidation(formData);
-      if (customErrors && Object.keys(customErrors).length > 0) {
-        Object.assign(newErrors, customErrors);
+      if (!customErrors) {
         isValid = false;
         toast.error("Please accurately fill out all the details.");
       }
     } else {
       fields.forEach((field) => {
+        const newErrors = {};
         const value =
           field.value !== undefined ? field.value : formData[field.id];
         const error = field.validate
@@ -65,9 +64,9 @@ const useDynamicForm = ({
           newErrors[field.id] = error;
           isValid = false;
         }
+        dispatch({ type: "REPLACE_ERROR", payload: newErrors });
       });
     }
-    dispatch({ type: "REPLACE_ERROR", payload: newErrors });
     if (isValid) {
       onSubmit(formData, resetFormData);
     }
