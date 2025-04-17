@@ -65,4 +65,6 @@ const StudentResult = () => {
   );
 };
 
-export default AuthRoute({ requireAuth: true, allowedRoles: ["student"] })( StudentResult );
+export default AuthRoute({ requireAuth: true, allowedRoles: ["student"] })(
+  StudentResult,
+);

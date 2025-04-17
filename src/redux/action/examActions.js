@@ -83,7 +83,7 @@ export const updateExam =
       if (response?.statusCode === 200) {
         dispatch({ type: "UPDATE_EXAM_SUCCESS", payload: response.data });
         // dispatch({
-        //   type: "FETCH_UPDATE_EXAM_SUCCESS",
+        //   type: "FETCH_EDIT_EXAMS_SUCCESS",
         //   payload: examData.questions,
         // });
         toast.success(response?.message);

@@ -17,7 +17,6 @@ const AllStudent = () => {
   const dispatch = useDispatch();
   const token = getCookie("authToken");
   const allStudentArray = useSelector((state) => state.teacherStudent);
-  console.log(allStudentArray);
 
   const [allStudent, setAllStudent] = useState(true);
   const [data, setData] = useState([]);

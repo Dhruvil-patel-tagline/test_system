@@ -14,13 +14,11 @@ const EditProfile = () => {
   const navigate = useNavigate();
   const user = getCookie("authUser");
   const token = getCookie("authToken");
-  // const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const loading = useSelector((state) => state.formData.loading);
 
   const handleRename = async (formData, resetFormData) => {
     try {
-      // setLoading(true);
       dispatch({ type: "SUBMIT_DYNAMIC_FORM" });
       const response = await putRequest("student/studentProfile", formData, {
         "access-token": token,
@@ -34,7 +32,6 @@ const EditProfile = () => {
         toast.error(response?.message || "Error occurred");
       }
     } finally {
-      // setLoading(false);
       dispatch({ type: "SUBMIT_EXAM_LOADING" });
     }
   };

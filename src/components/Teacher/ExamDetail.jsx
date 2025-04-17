@@ -30,6 +30,7 @@ const ExamDetail = () => {
         questions: examListObj?.quesArray || [],
       },
     });
+    
     dispatch({
       type: "SET_DATA",
       payload: {

@@ -167,7 +167,6 @@ const ExamForm = () => {
         headers: { "access-token": token },
       });
       if (response.statusCode === 200) {
-        // toast.success("Exam submitted successfully");
         navigate("/dashboard");
         dispatch({ type: "SET_EXAM_PENDING", payload: id });
         setTimeout(() => dispatch(studentExamsAction("submit")), 50000);

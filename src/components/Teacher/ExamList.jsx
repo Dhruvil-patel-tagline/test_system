@@ -18,7 +18,6 @@ const ExamList = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const examsList = useSelector((state) => state.exams);
-  console.log(examsList);
   const handleExaView = (exam) => {
     navigate(`/exam/${exam._id}`, {
       state: { subject: exam.subjectName, notes: exam.notes },

@@ -15,9 +15,8 @@ const examFormSubmit = async ({ setLoading, navigate, id, dispatch, val }) => {
       headers: { "access-token": token },
     });
     if (response.statusCode === 200) {
-      // toast.success("Exam submitted successfully");
       val && navigate("/dashboard");
-      dispatch({ type: "SET_EXAM_PENDING", payload: id });
+      dispatch({ type: "SET_STUDENT_EXAM_PENDING", payload: id });
       setTimeout(() => dispatch(studentExamsAction("submit")), 50000);
     } else {
       toast.error(response?.message);

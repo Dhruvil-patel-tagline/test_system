@@ -7,16 +7,16 @@ const initialState = {
 
 const studentExamReducer = (state = initialState, action) => {
   switch (action.type) {
-    case "FETCH_EXAMS_REQUEST":
+    case "FETCH_STUDENT_EXAMS_REQUEST":
       return { ...state, loading: true, error: null };
-    case "FETCH_EXAMS_SUCCESS":
+    case "FETCH_STUDENT_EXAMS_SUCCESS":
       return { ...state, loading: false, exams: action.payload };
-    case "SET_EXAM_PENDING":
+    case "SET_STUDENT_EXAM_PENDING":
       return {
         ...state,
         pendingExam: { ...state.pendingExam, [action.payload]: true },
       };
-    case "REMOVE_EXAM_PENDING":
+    case "REMOVE_STUDENT_EXAM_PENDING":
       var pendingExamsObj = { ...state.pendingExam };
       action.payload.forEach((val) => {
         if (val.Result.length > 0) {
@@ -24,7 +24,7 @@ const studentExamReducer = (state = initialState, action) => {
         }
       });
       return { ...state, exams: action.payload, pendingExam: pendingExamsObj };
-    case "FETCH_EXAMS_FAILURE":
+    case "FETCH_STUDENT_EXAMS_FAILURE":
       return { ...state, loading: false, error: action.payload };
     default:
       return state;

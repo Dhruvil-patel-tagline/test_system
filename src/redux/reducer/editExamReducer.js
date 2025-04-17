@@ -1,12 +1,12 @@
-// import { act } from "react";
+const initialState = {
+  quesArray: [],
+  subject: '',
+  notes: '',
+  loading: false,
+  error: null,
+};
 
-// const initialState = {
-//   quesArray: [],
-//   loading: false,
-//   error: null,
-// };
-
-const editExamReducer = (state, action) => {
+const editExamReducer = (state = initialState, action) => {
   switch (action.type) {
     case "FETCH_EDIT_EXAMS_REQUEST":
       return action.payload;
