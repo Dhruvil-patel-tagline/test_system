@@ -58,7 +58,7 @@ const StudentDashboard = () => {
   }, [exams, pendingExam]);
 
   useEffect(() => {
-    dispatch(studentExamsAction());
+    if (!exams?.length) dispatch(studentExamsAction());
     localStorage.removeItem("selectedAnswerData");
     localStorage.removeItem("timeLeftData");
     localStorage.removeItem("questionData");
@@ -82,6 +82,8 @@ const StudentDashboard = () => {
   );
 };
 
-export default AuthRoute({ requireAuth: true, allowedRoles: ["student"] })(StudentDashboard);
+export default AuthRoute({ requireAuth: true, allowedRoles: ["student"] })(
+  StudentDashboard,
+);
 
 // export default StudentDashboard;

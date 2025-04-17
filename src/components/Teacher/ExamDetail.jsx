@@ -27,7 +27,7 @@ const ExamDetail = () => {
         notes: state?.notes || ["", ""],
         examId: id,
         currentQ: index,
-        questions: examListObj.quesArray || [],
+        questions: examListObj?.quesArray || [],
       },
     });
     dispatch({
@@ -37,7 +37,7 @@ const ExamDetail = () => {
         notes: state?.notes || ["", ""],
         examId: id,
         currentQ: index,
-        questions: examListObj.quesArray || [],
+        questions: examListObj?.quesArray || [],
       },
     });
   };
@@ -70,9 +70,9 @@ const ExamDetail = () => {
         <Table
           tableData={tableData}
           tableHeader={examDetailHeader}
-          isLoading={examListObj.loading}
+          isLoading={examListObj?.loading}
           minWidth={"500px"}
-          error={examListObj.error}
+          error={examListObj?.error}
         />
       </div>
     </div>

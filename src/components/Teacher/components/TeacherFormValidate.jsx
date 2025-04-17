@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useCallback, useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -11,8 +12,10 @@ import {
 import validate, { uniqueOpt } from "../../../utils/validate";
 
 const TeacherFormValidate = ({ isUpdateForm }) => {
+  const token = getCookie("authToken");
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
   const formDataState = useSelector((state) => state.formData || {});
   const {
     currentQ = 0,
@@ -38,38 +41,6 @@ const TeacherFormValidate = ({ isUpdateForm }) => {
     }),
     [formDataState.errors],
   );
-  const token = getCookie("authToken");
-
-  // useEffect(() => {
-  //   if (!formDataState.formData) {
-  //     dispatch({
-  //       type: "SET_DATA",
-  //       payload: {
-  //         currentQ: 0,
-  //         subjectName: "",
-  //         questions: Array(TOTAL_QUESTIONS)
-  //           .fill()
-  //           .map(() => ({
-  //             question: "",
-  //             answer: "",
-  //             options: ["", "", "", ""],
-  //           })),
-  //         notes: ["", ""],
-  //       },
-  //     });
-  //   }
-
-  //   if (!formDataState.errors) {
-  //     dispatch({
-  //       type: "SET_ERROR",
-  //       payload: {
-  //         error: teacherErrorObj,
-  //         allQuestionError: Array(TOTAL_QUESTIONS).fill(false),
-  //         questionsError: questionsErrorObj,
-  //       },
-  //     });
-  //   }
-  // }, []);
 
   const isDuplicateQuestion = useCallback(
     (index, value) => {
@@ -83,16 +54,14 @@ const TeacherFormValidate = ({ isUpdateForm }) => {
   const handleQueValidate = useCallback(
     (index) => {
       const question = questions[index];
-      const errorObj = {
-        questionError: "",
-        answerError: "",
-        optionsError: "",
-      };
+      const errorObj = questionsErrorObj;
 
       if (!question?.question?.trim()) {
         errorObj.questionError = "Question cannot be empty";
       } else if (isDuplicateQuestion(index, question.question)) {
         errorObj.questionError = "Duplicate question not allowed";
+      } else {
+        errorObj.questionError = null;
       }
 
       if (!question?.options || !Array.isArray(question.options)) {
@@ -103,11 +72,15 @@ const TeacherFormValidate = ({ isUpdateForm }) => {
           errorObj.optionsError = "4 options are required for each question";
         } else if (!uniqueOpt(question.options)) {
           errorObj.optionsError = "Same option not allowed";
+        } else {
+          errorObj.optionsError = null;
         }
       }
 
       if (!question?.answer?.trim()) {
         errorObj.answerError = "Answer is required";
+      } else {
+        errorObj.answerError = null;
       }
 
       dispatch({
@@ -163,10 +136,7 @@ const TeacherFormValidate = ({ isUpdateForm }) => {
       dispatch({
         type: "SET_ERROR",
         payload: {
-          questionsError: {
-            ...errors.questionsError,
-            questionError: error,
-          },
+          questionsError: { ...errors.questionsError, questionError: error },
         },
       });
     },
@@ -181,10 +151,7 @@ const TeacherFormValidate = ({ isUpdateForm }) => {
         ...updatedQuestions[currentQ],
         answer: value,
       };
-      dispatch({
-        type: "SET_DATA",
-        payload: { questions: updatedQuestions },
-      });
+      dispatch({ type: "SET_DATA", payload: { questions: updatedQuestions } });
       let error = validate("Answer", value);
       dispatch({
         type: "SET_ERROR",
@@ -208,10 +175,7 @@ const TeacherFormValidate = ({ isUpdateForm }) => {
         answer: "",
       };
 
-      dispatch({
-        type: "SET_DATA",
-        payload: { questions: updatedQuestions },
-      });
+      dispatch({ type: "SET_DATA", payload: { questions: updatedQuestions } });
 
       let error = !value?.trim()
         ? "Option can not be empty"
@@ -254,12 +218,7 @@ const TeacherFormValidate = ({ isUpdateForm }) => {
         allQue = errors.allQuestionError.map((val, arrIndex) =>
           arrIndex === index ? true : val,
         );
-        dispatch({
-          type: "SET_ERROR",
-          payload: {
-            allQuestionError: allQue,
-          },
-        });
+        dispatch({ type: "SET_ERROR", payload: { allQuestionError: allQue } });
 
         if (page) {
           dispatch({
@@ -273,12 +232,7 @@ const TeacherFormValidate = ({ isUpdateForm }) => {
         allQue = errors.allQuestionError.map((val, arrIndex) =>
           arrIndex === index ? false : val,
         );
-        dispatch({
-          type: "SET_ERROR",
-          payload: {
-            allQuestionError: allQue,
-          },
-        });
+        dispatch({ type: "SET_ERROR", payload: { allQuestionError: allQue } });
       }
       if (allQue) {
         if (allQue.every((val) => val)) {
@@ -296,20 +250,19 @@ const TeacherFormValidate = ({ isUpdateForm }) => {
 
   const customValidation = () => {
     let result = handleQuestionSave(currentQ);
-
-    const errorObj = { error: {}, allQuestionsError: {}, questionsError: {} };
+    const errorObj = { error: {}, questionsError: {} };
 
     if (!subjectName?.trim()) {
       errorObj.error.subjectName = "Subject name is required";
     }
 
     const currentQuestion = questions[currentQ];
+
     if (!currentQuestion?.question?.trim()) {
       errorObj.questionsError.questionError = "Question cannot be empty";
     } else if (isDuplicateQuestion(currentQ, currentQuestion.question)) {
       errorObj.questionsError.questionError = "Duplicate question not allowed";
     }
-
     const hasEmptyOption = currentQuestion?.options?.some(
       (opt) => !opt?.trim(),
     );
@@ -333,52 +286,8 @@ const TeacherFormValidate = ({ isUpdateForm }) => {
       errorObj.error.note0 = "Notes can not be same";
     }
 
-    if (result && !result.every((val) => val)) {
-      errorObj.allQuestionsError = "all 15 question are required";
-    }
+    dispatch({ type: "SET_ERROR", payload: errorObj });
 
-    if (Object.keys(errorObj).length > 0) {
-      // dispatch(({
-      //   type: "SET_ERROR",
-      //   payload: { ...errors.error }
-      // }))
-      dispatch({
-        type: "SET_ERROR",
-        payload: { error: errorObj.error },
-      });
-      dispatch({
-        type: "SET_ERROR",
-        payload: { questionError: errorObj.questionsError },
-      });
-      // if (errorObj.error.subjectName) {
-      //   dispatch({
-      //     type: "SET_ERROR",
-      //     payload: {
-      //       error: { ...errors.error, subjectError: errorObj.subjectName },
-      //     },
-      //   });
-      // }
-
-      // dispatch({
-      //   type: "SET_ERROR",
-      //   payload: {
-      //     questionsError: {
-      //       questionError: errorObj[`question-${currentQ}`] || "",
-      //       optionsError: errorObj[`option-${currentQ}-0`] || "",
-      //       answerError: errorObj[`answer-${currentQ}`] || "",
-      //     },
-      //   },
-      // });
-
-      // if (errorObj.note0) {
-      //   dispatch({
-      //     type: "SET_ERROR",
-      //     payload: {
-      //       error: { ...errors.error, noteError: errorObj.note0 },
-      //     },
-      //   });
-      // }
-    }
     return result.every((val) => val);
   };
 

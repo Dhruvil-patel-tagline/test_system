@@ -5,6 +5,7 @@ import {
   postRequest,
   putRequest,
 } from "../../utils/api";
+import { resetForm } from "./resetForm";
 
 export const fetchExams = (token) => async (dispatch) => {
   dispatch({ type: "FETCH_EXAMS_REQUEST" });
@@ -49,7 +50,6 @@ export const deleteExam = (id, token) => async (dispatch) => {
 };
 
 export const createExam = (examData, token, navigate) => async (dispatch) => {
-
   dispatch({ type: "CREATE_EXAM_REQUEST" });
   try {
     const response = await postRequest("dashboard/Teachers/Exam", {
@@ -60,6 +60,7 @@ export const createExam = (examData, token, navigate) => async (dispatch) => {
     });
     if (response?.statusCode === 200) {
       dispatch({ type: "CREATE_EXAM_SUCCESS", payload: response.data });
+      dispatch(resetForm());
       navigate(-1);
     } else {
       dispatch({ type: "CREATE_EXAM_FAILURE", payload: response.message });
@@ -81,7 +82,12 @@ export const updateExam =
       );
       if (response?.statusCode === 200) {
         dispatch({ type: "UPDATE_EXAM_SUCCESS", payload: response.data });
+        // dispatch({
+        //   type: "FETCH_UPDATE_EXAM_SUCCESS",
+        //   payload: examData.questions,
+        // });
         toast.success(response?.message);
+        dispatch(resetForm());
         navigate(-1);
       } else {
         dispatch({ type: "UPDATE_EXAM_FAILURE", payload: response.message });
@@ -93,7 +99,14 @@ export const updateExam =
   };
 
 export const fetchEditExamList = (id, token) => async (dispatch) => {
-  dispatch({ type: "FETCH_EDIT_EXAMS_REQUEST" });
+  dispatch({
+    type: "FETCH_EDIT_EXAMS_REQUEST",
+    payload: {
+      quesArray: [],
+      loading: true,
+      error: null,
+    },
+  });
   try {
     const response = await getRequest(
       `dashboard/Teachers/examDetail?id=${id}`,

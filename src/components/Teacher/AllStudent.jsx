@@ -17,6 +17,7 @@ const AllStudent = () => {
   const dispatch = useDispatch();
   const token = getCookie("authToken");
   const allStudentArray = useSelector((state) => state.teacherStudent);
+  console.log(allStudentArray);
 
   const [allStudent, setAllStudent] = useState(true);
   const [data, setData] = useState([]);
@@ -54,7 +55,8 @@ const AllStudent = () => {
   }, [data]);
 
   useEffect(() => {
-    dispatch(allStudentList("dashboard/Teachers", token));
+    if (!allStudentArray?.allStudent?.length)
+      dispatch(allStudentList("dashboard/Teachers", token));
   }, [token]);
 
   useEffect(() => {

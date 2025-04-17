@@ -10,15 +10,15 @@ import ButtonCom from "../../shared/ButtonCom";
 import Table from "../../shared/Table";
 import { getCookie } from "../../utils/getCookie";
 import { examListHeader } from "../../utils/staticObj";
-import "./css/teacher.css";
 import AuthRoute from "../auth/AuthRoute";
+import "./css/teacher.css";
 
 const ExamList = () => {
   const token = getCookie("authToken");
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const examsList = useSelector((state) => state.exams);
-
+  console.log(examsList);
   const handleExaView = (exam) => {
     navigate(`/exam/${exam._id}`, {
       state: { subject: exam.subjectName, notes: exam.notes },
@@ -33,31 +33,31 @@ const ExamList = () => {
   const tableData = useMemo(() => {
     return examsList?.exams?.length
       ? examsList?.exams?.map((val) => ({
-        Subject: val.subjectName,
-        Email: val.email,
-        Notes: val.notes.join(", "),
-        "View Exam": (
-          <ButtonCom onClick={() => handleExaView(val)} color="skyblue">
-            <span className="bntIcon">
-              <img src={vision} width="20px" height="20px" />
-              View Exam
-            </span>
-          </ButtonCom>
-        ),
-        "Delete Exam": (
-          <ButtonCom onClick={() => handleExaDelete(val._id)} color="red">
-            <span className="bntIcon">
-              <img src={deleteIcon} width="15px" height="15px" />
-              Delete Exam
-            </span>
-          </ButtonCom>
-        ),
-      }))
+          Subject: val.subjectName,
+          Email: val.email,
+          Notes: val.notes.join(", "),
+          "View Exam": (
+            <ButtonCom onClick={() => handleExaView(val)} color="skyblue">
+              <span className="bntIcon">
+                <img src={vision} width="20px" height="20px" />
+                View Exam
+              </span>
+            </ButtonCom>
+          ),
+          "Delete Exam": (
+            <ButtonCom onClick={() => handleExaDelete(val._id)} color="red">
+              <span className="bntIcon">
+                <img src={deleteIcon} width="15px" height="15px" />
+                Delete Exam
+              </span>
+            </ButtonCom>
+          ),
+        }))
       : [];
   }, [examsList]);
 
   useEffect(() => {
-    dispatch(fetchExams(token));
+    if (!examsList.exams.length) dispatch(fetchExams(token));
   }, [token]);
 
   return (
@@ -75,4 +75,6 @@ const ExamList = () => {
   );
 };
 
-export default AuthRoute({ requireAuth: true, allowedRoles: ["teacher"] })(ExamList);
+export default AuthRoute({ requireAuth: true, allowedRoles: ["teacher"] })(
+  ExamList,
+);

@@ -14,6 +14,8 @@ const useDynamicForm = ({
   const { formData, errors } = useSelector((state) => state.formData);
   const dispatch = useDispatch();
 
+
+
   useEffect(() => {
     dispatch({ type: "SET_DATA", payload: initialValues });
   }, [initialValues]);
@@ -45,7 +47,7 @@ const useDynamicForm = ({
   const handleSubmit = (e) => {
     e.preventDefault();
     let isValid = true;
-
+    const newErrors = {};
     if (customValidation) {
       const customErrors = customValidation(formData);
       if (!customErrors) {
@@ -54,9 +56,7 @@ const useDynamicForm = ({
       }
     } else {
       fields.forEach((field) => {
-        const newErrors = {};
-        const value =
-          field.value !== undefined ? field.value : formData[field.id];
+        const value = field.value || formData[field.id];
         const error = field.validate
           ? field.validate(value, formData)
           : validate(field.id, value, formData);
@@ -64,8 +64,8 @@ const useDynamicForm = ({
           newErrors[field.id] = error;
           isValid = false;
         }
-        dispatch({ type: "REPLACE_ERROR", payload: newErrors });
       });
+      dispatch({ type: "REPLACE_ERROR", payload: newErrors });
     }
     if (isValid) {
       onSubmit(formData, resetFormData);

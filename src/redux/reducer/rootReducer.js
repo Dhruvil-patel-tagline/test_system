@@ -7,7 +7,7 @@ import teacherStudentReducer from "./teacherStudentReducer";
 
 const rootReducer = combineReducers({
   exams: examReducer,
-  editExam: editExamReducer,
+  editExam: editExamReducer ,
   teacherStudent: teacherStudentReducer,
   examList: studentExamReducer,
   formData: formReducer,
