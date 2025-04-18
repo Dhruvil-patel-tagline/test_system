@@ -82,10 +82,14 @@ export const updateExam =
       );
       if (response?.statusCode === 200) {
         dispatch({ type: "UPDATE_EXAM_SUCCESS", payload: response.data });
-        // dispatch({
-        //   type: "FETCH_EDIT_EXAMS_SUCCESS",
-        //   payload: examData.questions,
-        // });
+        dispatch({
+          type: "FETCH_EDIT_EXAMS_SUCCESS",
+          payload: {
+            quesArray: examData.questions,
+            subject: examData.subject,
+            notes: examData.notes,
+          },
+        });
         toast.success(response?.message);
         dispatch(resetForm());
         navigate(-1);
@@ -98,32 +102,26 @@ export const updateExam =
     }
   };
 
-export const fetchEditExamList = (id, token) => async (dispatch) => {
-  dispatch({
-    type: "FETCH_EDIT_EXAMS_REQUEST",
-    payload: {
-      quesArray: [],
-      loading: true,
-      error: null,
-    },
-  });
-  try {
-    const response = await getRequest(
-      `dashboard/Teachers/examDetail?id=${id}`,
-      token,
-    );
-    if (response?.statusCode === 200) {
-      dispatch({
-        type: "FETCH_EDIT_EXAMS_SUCCESS",
-        payload: response?.data?.questions,
-      });
-    } else {
-      dispatch({
-        type: "FETCH_EDIT_EXAMS_FAILURE",
-        payload: response?.message,
-      });
+export const fetchEditExamList =
+  (id, token, subject, notes) => async (dispatch) => {
+    dispatch({ type: "FETCH_EDIT_EXAMS_REQUEST" });
+    try {
+      const response = await getRequest(
+        `dashboard/Teachers/examDetail?id=${id}`,
+        token,
+      );
+      if (response?.statusCode === 200) {
+        dispatch({
+          type: "FETCH_EDIT_EXAMS_SUCCESS",
+          payload: { quesArray: response?.data?.questions, subject, notes },
+        });
+      } else {
+        dispatch({
+          type: "FETCH_EDIT_EXAMS_FAILURE",
+          payload: response?.message,
+        });
+      }
+    } catch (error) {
+      dispatch({ type: "FETCH_EDIT_EXAMS_FAILURE", payload: error.message });
     }
-  } catch (error) {
-    dispatch({ type: "FETCH_EDIT_EXAMS_FAILURE", payload: error.message });
-  }
-};
+  };

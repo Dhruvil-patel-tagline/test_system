@@ -1,51 +1,36 @@
 /* eslint-disable react-refresh/only-export-components */
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import edit from "../../assets/edit.svg";
-import { fetchEditExamList } from "../../redux/action/examActions";
+// import { fetchEditExamList } from "../../redux/action/examActions";
 import ButtonCom from "../../shared/ButtonCom";
 import Table from "../../shared/Table";
-import { getCookie } from "../../utils/getCookie";
+// import { getCookie } from "../../utils/getCookie";
 import { examDetailHeader } from "../../utils/staticObj";
 import AuthRoute from "../auth/AuthRoute";
 import "./css/teacher.css";
 
 const ExamDetail = () => {
   const dispatch = useDispatch();
-  const token = getCookie("authToken");
   const { id } = useParams();
-  const { state } = useLocation();
   const navigate = useNavigate();
   const examListObj = useSelector((state) => state?.editExam);
 
   const handleEdit = (index) => {
-    navigate(`/updateExam/${id}`, {
-      state: {
-        subject: state?.subject || "",
-        notes: state?.notes || ["", ""],
-        examId: id,
-        currentQ: index,
-        questions: examListObj?.quesArray || [],
-      },
-    });
-    
+    navigate(`/updateExam/${id}`);
     dispatch({
       type: "SET_DATA",
       payload: {
-        subjectName: state?.subject || "",
-        notes: state?.notes || ["", ""],
+        subjectName: examListObj?.subject || "",
+        notes: examListObj?.notes || ["", ""],
         examId: id,
         currentQ: index,
         questions: examListObj?.quesArray || [],
       },
     });
   };
-
-  useEffect(() => {
-    dispatch(fetchEditExamList(id, token));
-  }, [id, token]);
 
   const tableData = useMemo(() => {
     return examListObj?.quesArray?.length
@@ -67,6 +52,7 @@ const ExamDetail = () => {
 
   return (
     <div className="examDetailRoot">
+      <h1>{examListObj.subject}</h1>
       <div style={{ width: "100%", maxWidth: "900px" }}>
         <Table
           tableData={tableData}

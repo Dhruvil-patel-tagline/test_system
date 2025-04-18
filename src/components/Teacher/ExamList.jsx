@@ -5,7 +5,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import deleteIcon from "../../assets/delete.png";
 import vision from "../../assets/vision.png";
-import { deleteExam, fetchExams } from "../../redux/action/examActions";
+import {
+  deleteExam,
+  fetchEditExamList,
+  fetchExams,
+} from "../../redux/action/examActions";
 import ButtonCom from "../../shared/ButtonCom";
 import Table from "../../shared/Table";
 import { getCookie } from "../../utils/getCookie";
@@ -19,11 +23,10 @@ const ExamList = () => {
   const dispatch = useDispatch();
   const examsList = useSelector((state) => state.exams);
   const handleExaView = (exam) => {
-    navigate(`/exam/${exam._id}`, {
-      state: { subject: exam.subjectName, notes: exam.notes },
-    });
+    navigate(`/exam/${exam._id}`);
+    dispatch(fetchEditExamList(exam._id, token, exam.subjectName, exam.notes));
   };
-
+  
   const handleExaDelete = (id) => {
     let confirmDelete = confirm("Are you sure you want to delete this exam?");
     confirmDelete && dispatch(deleteExam(id, token));

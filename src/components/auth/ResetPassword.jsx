@@ -1,6 +1,7 @@
 /* eslint-disable react-refresh/only-export-components */
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import DynamicForm from "../../shared/DynamicForm";
 import Loader from "../../shared/Loader";
 import { postRequest } from "../../utils/api";
@@ -18,6 +19,10 @@ const ResetPassword = () => {
 
   const onSubmit = async (data, resetFormData) => {
     const { oldPassword, password, confirmPassword } = data;
+    if (oldPassword === password) {
+      toast.error("Old password and new password should be different");
+      return;
+    }
 
     try {
       // setLoading(true);
