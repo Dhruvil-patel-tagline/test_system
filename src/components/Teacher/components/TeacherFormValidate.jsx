@@ -58,7 +58,6 @@ const TeacherFormValidate = ({ isUpdateForm, id, state }) => {
     }),
     [formDataState.errors],
   );
-
   const isDuplicateQuestion = useCallback(
     (index, value) => {
       return questions.some(
@@ -71,7 +70,7 @@ const TeacherFormValidate = ({ isUpdateForm, id, state }) => {
   const handleQueValidate = useCallback(
     (index) => {
       const question = questions[index];
-      const errorObj = questionsErrorObj;
+      const errorObj = { ...questionsErrorObj };
 
       if (!question?.question?.trim()) {
         errorObj.questionError = "Question cannot be empty";
