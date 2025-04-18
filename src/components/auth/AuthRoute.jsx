@@ -24,13 +24,16 @@ const AuthRoute =
       const location = useLocation();
       const token = getCookie("authToken");
       const user = getCookie("authUser");
-
       if (redirectIfAuth && !isTokenExpired(token)) {
         const from = location.state?.from?.pathname || "/dashboard";
         return <Navigate to={from} replace />;
       }
 
-      if (requireAuth && (isTokenExpired(token) || !user)) {
+      if (
+        requireAuth &&
+        (isTokenExpired(token) ||
+          !(user?.role === "student" || user?.role === "teacher"))
+      ) {
         document.cookie = "authToken=; path=/; max-age=0";
         document.cookie = "authUser=; path=/; max-age=0";
         return <Navigate to="/login" state={{ from: location }} replace />;
@@ -39,7 +42,7 @@ const AuthRoute =
       if (allowedRoles.length > 0) {
         if (
           isTokenExpired(token) ||
-          !user ||
+          !(user?.role === "student" || user?.role === "teacher") ||
           !allowedRoles.includes(user.role)
         ) {
           document.cookie = "authToken=; path=/; max-age=0";

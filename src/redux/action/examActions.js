@@ -23,7 +23,7 @@ export const fetchExams = (token) => async (dispatch) => {
     dispatch({
       type: "FETCH_EXAMS_FAILURE",
       payload: error.message || "Error occurred",
-    })
+    });
   }
 };
 
@@ -105,7 +105,7 @@ export const updateExam =
   };
 
 export const fetchEditExamList =
-  (id, token, subject, notes, setFormData) => async (dispatch) => {
+  (id, token, subjectName, notes, setFormData) => async (dispatch) => {
     dispatch({ type: "FETCH_EDIT_EXAMS_REQUEST" });
     try {
       const response = await getRequest(
@@ -115,13 +115,13 @@ export const fetchEditExamList =
       if (response?.statusCode === 200) {
         dispatch({
           type: "FETCH_EDIT_EXAMS_SUCCESS",
-          payload: { quesArray: response?.data?.questions, subject, notes },
+          payload: { quesArray: response?.data?.questions, subjectName, notes },
         });
         if (setFormData) {
           dispatch({
             type: "SET_DATA",
             payload: {
-              subjectName: subject,
+              subjectName: subjectName,
               notes: notes,
               examId: id,
               currentQ: 0,

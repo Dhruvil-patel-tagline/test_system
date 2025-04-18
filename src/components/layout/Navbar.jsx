@@ -79,8 +79,12 @@ const Navbar = () => {
             }}
           >
             <img src={userIcon} width="25px" height="25px" />
-            {user?.name.charAt(0).toUpperCase() + user?.name.slice(1)}(
-            {user?.role.charAt(0).toUpperCase() + user?.role.slice(1)})
+            {user?.name &&
+              user?.name.charAt(0).toUpperCase() + user?.name.slice(1)}
+            (
+            {user?.role &&
+              user?.role.charAt(0).toUpperCase() + user?.role.slice(1)}
+            )
           </p>
           <ButtonCom
             onClick={handleLogout}

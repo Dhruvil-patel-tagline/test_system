@@ -24,7 +24,7 @@ const ExamDetail = () => {
 
   const handleEdit = (index) => {
     navigate(`/updateExam/${id}`, {
-      state: { subject: state?.subjectName, notes: state?.notes },
+      state: { subjectName: state?.subjectName, notes: state?.notes },
     });
     dispatch({
       type: "SET_DATA",
