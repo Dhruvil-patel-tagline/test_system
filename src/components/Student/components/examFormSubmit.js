@@ -5,7 +5,6 @@ import { getCookie } from "../../../utils/getCookie";
 
 const examFormSubmit = async ({ setLoading, navigate, id, dispatch, val }) => {
   const token = getCookie("authToken");
-
   try {
     if (val) {
       setLoading(true);

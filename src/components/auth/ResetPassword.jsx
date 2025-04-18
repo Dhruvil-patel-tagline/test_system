@@ -13,7 +13,6 @@ import "./css/auth.css";
 const ResetPassword = () => {
   const token = getCookie("authToken");
   const navigate = useNavigate();
-  // const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const loading = useSelector((state) => state.formData.loading);
 
@@ -23,9 +22,7 @@ const ResetPassword = () => {
       toast.error("Old password and new password should be different");
       return;
     }
-
     try {
-      // setLoading(true);
       dispatch({ type: "SUBMIT_DYNAMIC_FORM" });
       const response = await postRequest("users/ResetPassword", {
         data: {
@@ -42,7 +39,6 @@ const ResetPassword = () => {
         resetFormData();
       }
     } finally {
-      // setLoading(false);
       dispatch({ type: "SUBMIT_EXAM_LOADING" });
     }
   };

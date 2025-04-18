@@ -13,6 +13,7 @@ const NewPassword = () => {
   const [searchParams] = useSearchParams();
   let token = searchParams.get("token");
   const [loading, setLoading] = useState(false);
+
   useEffect(() => {
     const fetchData = async () => {
       try {

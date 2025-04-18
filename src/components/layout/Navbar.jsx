@@ -69,15 +69,7 @@ const Navbar = () => {
           </nav>
         </div>
         <div className={navClass}>
-          <p
-            style={{
-              color: "white",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              gap: "6px",
-            }}
-          >
+          <p className="navbar-user">
             <img src={userIcon} width="25px" height="25px" />
             {user?.name &&
               user?.name.charAt(0).toUpperCase() + user?.name.slice(1)}
@@ -90,14 +82,7 @@ const Navbar = () => {
             onClick={handleLogout}
             disabled={location.pathname === "/examForm"}
           >
-            <span
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                gap: "4px",
-              }}
-            >
+            <span className="logout-button">
               <img
                 src={logout}
                 width="15px"

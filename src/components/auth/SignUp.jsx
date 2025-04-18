@@ -11,13 +11,11 @@ import "./css/auth.css";
 
 const SignUp = () => {
   const navigate = useNavigate();
-  // const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const loading = useSelector((state) => state.formData.loading);
 
   const addUser = async (userData, resetFormData) => {
     try {
-      // setLoading(true);
       dispatch({ type: "SUBMIT_DYNAMIC_FORM" });
       let response = await postRequest("users/SignUp", { data: userData });
       if (response.statusCode === 200) {
@@ -26,7 +24,6 @@ const SignUp = () => {
         navigate("/login");
       }
     } finally {
-      // setLoading(false);
       dispatch({ type: "SUBMIT_EXAM_LOADING" });
     }
   };

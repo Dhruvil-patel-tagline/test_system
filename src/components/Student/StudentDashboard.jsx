@@ -85,5 +85,3 @@ const StudentDashboard = () => {
 export default AuthRoute({ requireAuth: true, allowedRoles: ["student"] })(
   StudentDashboard,
 );
-
-// export default StudentDashboard;
