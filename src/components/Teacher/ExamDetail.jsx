@@ -1,13 +1,15 @@
 /* eslint-disable react-refresh/only-export-components */
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import edit from "../../assets/edit.svg";
 // import { fetchEditExamList } from "../../redux/action/examActions";
 import ButtonCom from "../../shared/ButtonCom";
 import Table from "../../shared/Table";
 // import { getCookie } from "../../utils/getCookie";
+import { fetchEditExamList } from "../../redux/action/examActions";
+import { getCookie } from "../../utils/getCookie";
 import { examDetailHeader } from "../../utils/staticObj";
 import AuthRoute from "../auth/AuthRoute";
 import "./css/teacher.css";
@@ -15,16 +17,20 @@ import "./css/teacher.css";
 const ExamDetail = () => {
   const dispatch = useDispatch();
   const { id } = useParams();
+  const token = getCookie("authToken");
+  const { state } = useLocation();
   const navigate = useNavigate();
   const examListObj = useSelector((state) => state?.editExam);
 
   const handleEdit = (index) => {
-    navigate(`/updateExam/${id}`);
+    navigate(`/updateExam/${id}`, {
+      state: { subject: state?.subjectName, notes: state?.notes },
+    });
     dispatch({
       type: "SET_DATA",
       payload: {
-        subjectName: examListObj?.subject || "",
-        notes: examListObj?.notes || ["", ""],
+        subjectName: state?.subjectName || "",
+        notes: state?.notes || ["", ""],
         examId: id,
         currentQ: index,
         questions: examListObj?.quesArray || [],
@@ -50,9 +56,12 @@ const ExamDetail = () => {
       : [];
   }, [examListObj]);
 
+  useEffect(() => {
+    dispatch(fetchEditExamList(id, token, state?.subjectName, state?.notes));
+  }, []);
+
   return (
     <div className="examDetailRoot">
-      <h1>{examListObj.subject}</h1>
       <div style={{ width: "100%", maxWidth: "900px" }}>
         <Table
           tableData={tableData}

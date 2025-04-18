@@ -23,7 +23,7 @@ export const fetchExams = (token) => async (dispatch) => {
     dispatch({
       type: "FETCH_EXAMS_FAILURE",
       payload: error.message || "Error occurred",
-    });
+    })
   }
 };
 
@@ -61,7 +61,7 @@ export const createExam = (examData, token, navigate) => async (dispatch) => {
     if (response?.statusCode === 200) {
       dispatch({ type: "CREATE_EXAM_SUCCESS", payload: response.data });
       dispatch(resetForm());
-      navigate(-1);
+      navigate("/dashboard");
     } else {
       dispatch({ type: "CREATE_EXAM_FAILURE", payload: response.message });
       toast.error(response.message || "Error occurred");
@@ -86,13 +86,15 @@ export const updateExam =
           type: "FETCH_EDIT_EXAMS_SUCCESS",
           payload: {
             quesArray: examData.questions,
-            subject: examData.subject,
+            subjectName: examData.subjectName,
             notes: examData.notes,
           },
         });
         toast.success(response?.message);
         dispatch(resetForm());
-        navigate(-1);
+        navigate(`/exam/${id}`, {
+          state: { subjectName: examData?.subjectName, notes: examData?.notes },
+        });
       } else {
         dispatch({ type: "UPDATE_EXAM_FAILURE", payload: response.message });
         toast.error(response?.message);
@@ -103,7 +105,7 @@ export const updateExam =
   };
 
 export const fetchEditExamList =
-  (id, token, subject, notes) => async (dispatch) => {
+  (id, token, subject, notes, setFormData) => async (dispatch) => {
     dispatch({ type: "FETCH_EDIT_EXAMS_REQUEST" });
     try {
       const response = await getRequest(
@@ -115,6 +117,18 @@ export const fetchEditExamList =
           type: "FETCH_EDIT_EXAMS_SUCCESS",
           payload: { quesArray: response?.data?.questions, subject, notes },
         });
+        if (setFormData) {
+          dispatch({
+            type: "SET_DATA",
+            payload: {
+              subjectName: subject,
+              notes: notes,
+              examId: id,
+              currentQ: 0,
+              questions: response?.data?.questions || [],
+            },
+          });
+        }
       } else {
         dispatch({
           type: "FETCH_EDIT_EXAMS_FAILURE",

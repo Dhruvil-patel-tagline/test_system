@@ -2,7 +2,11 @@
 import { useCallback, useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { createExam, updateExam } from "../../../redux/action/examActions";
+import {
+  createExam,
+  fetchEditExamList,
+  updateExam,
+} from "../../../redux/action/examActions";
 import { getCookie } from "../../../utils/getCookie";
 import {
   questionsErrorObj,
@@ -11,7 +15,7 @@ import {
 } from "../../../utils/staticObj";
 import validate, { uniqueOpt } from "../../../utils/validate";
 
-const TeacherFormValidate = ({ isUpdateForm }) => {
+const TeacherFormValidate = ({ isUpdateForm, id, state }) => {
   const token = getCookie("authToken");
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -19,7 +23,6 @@ const TeacherFormValidate = ({ isUpdateForm }) => {
   const formDataState = useSelector((state) => state.formData || {});
   const {
     currentQ = 0,
-    examId,
     notes = ["", ""],
     questions = Array(TOTAL_QUESTIONS)
       .fill()
@@ -30,6 +33,20 @@ const TeacherFormValidate = ({ isUpdateForm }) => {
       })),
     subjectName = "",
   } = formDataState.formData || {};
+
+  useEffect(() => {
+    if (id && !questions?.[0]?.question) {
+      dispatch(
+        fetchEditExamList(
+          id,
+          token,
+          state?.subjectName,
+          state?.notes,
+          "setFromDAta",
+        ),
+      );
+    }
+  }, [id]);
 
   const errors = useMemo(
     () => ({
@@ -250,51 +267,59 @@ const TeacherFormValidate = ({ isUpdateForm }) => {
 
   const customValidation = () => {
     let result = handleQuestionSave(currentQ);
-    const errorObj = { error: {}, questionsError: {} };
+    // const errorObj = { error: {}, questionsError: {} };
+    const errorObj = { subjectName: null, note0: null };
 
     if (!subjectName?.trim()) {
-      errorObj.error.subjectName = "Subject name is required";
+      errorObj.subjectName = "Subject name is required";
     }
 
-    const currentQuestion = questions[currentQ];
+    // const currentQuestion = questions[currentQ];
 
-    if (!currentQuestion?.question?.trim()) {
-      errorObj.questionsError.questionError = "Question cannot be empty";
-    } else if (isDuplicateQuestion(currentQ, currentQuestion.question)) {
-      errorObj.questionsError.questionError = "Duplicate question not allowed";
-    }
-    const hasEmptyOption = currentQuestion?.options?.some(
-      (opt) => !opt?.trim(),
-    );
-    if (hasEmptyOption) {
-      errorObj.questionsError.optionsError =
-        "4 options are required for each question";
-    } else if (
-      currentQuestion?.options &&
-      !uniqueOpt(currentQuestion.options)
-    ) {
-      errorObj.questionsError.optionsError = "Same option not allowed";
-    }
+    // if (!currentQuestion?.question?.trim()) {
+    //   errorObj.questionsError.questionError = "Question cannot be empty";
+    // } else if (isDuplicateQuestion(currentQ, currentQuestion.question)) {
+    //   errorObj.questionsError.questionError = "Duplicate question not allowed";
+    // }
+    // const hasEmptyOption = currentQuestion?.options?.some(
+    //   (opt) => !opt?.trim(),
+    // );
+    // if (hasEmptyOption) {
+    //   errorObj.questionsError.optionsError =
+    //     "4 options are required for each question";
+    // } else if (
+    //   currentQuestion?.options &&
+    //   !uniqueOpt(currentQuestion.options)
+    // ) {
+    //   errorObj.questionsError.optionsError = "Same option not allowed";
+    // }
 
-    if (!currentQuestion?.answer?.trim()) {
-      errorObj.questionsError.answerError = "Answer is required";
-    }
+    // if (!currentQuestion?.answer?.trim()) {
+    //   errorObj.questionsError.answerError = "Answer is required";
+    // }
 
     if (!notes?.every((note) => note?.trim())) {
-      errorObj.error.note0 = "Notes are required";
+      errorObj.note0 = "Notes are required";
     } else if (notes[0]?.trim() === notes[1]?.trim()) {
-      errorObj.error.note0 = "Notes can not be same";
+      errorObj.note0 = "Notes can not be same";
     }
+
+    dispatch({
+      type: "SET_ERROR",
+      payload: { error: errorObj },
+    });
 
     dispatch({ type: "SET_ERROR", payload: errorObj });
 
-    return result.every((val) => val);
+    return (
+      result.every((val) => val) && !errorObj.note0 && !errorObj.subjectName
+    );
   };
 
   const handleSubmit = () => {
     if (isUpdateForm) {
       dispatch(
-        updateExam({ subjectName, questions, notes }, examId, token, navigate),
+        updateExam({ subjectName, questions, notes }, id, token, navigate),
       );
     } else {
       dispatch(createExam({ subjectName, questions, notes }, token, navigate));
@@ -329,13 +354,13 @@ const TeacherFormValidate = ({ isUpdateForm }) => {
   };
 
   useEffect(() => {
-    if (examId) {
+    if (id) {
       dispatch({
         type: "SET_ERROR",
         payload: { allQuestionError: Array(TOTAL_QUESTIONS).fill(true) },
       });
     }
-  }, [examId]);
+  }, [id]);
 
   const formFields = useMemo(() => {
     const currentQuestion = questions[currentQ] || {

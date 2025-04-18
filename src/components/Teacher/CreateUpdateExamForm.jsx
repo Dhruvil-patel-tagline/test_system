@@ -1,6 +1,6 @@
 /* eslint-disable react-refresh/only-export-components */
 import { useSelector } from "react-redux";
-import { useLocation } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import DynamicForm from "../../shared/DynamicForm";
 import Loader from "../../shared/Loader";
 import AuthRoute from "../auth/AuthRoute";
@@ -9,10 +9,12 @@ import "./css/teacher.css";
 
 const CreateUpdateExamForm = () => {
   const loading = useSelector((state) => state.exams.loading);
-  const { pathname } = useLocation();
+  const { pathname, state } = useLocation();
+  let {id} = useParams();
+ 
   const isUpdateForm = pathname.includes("updateExam");
   const { customValidation, handleSubmit, resetForm, examData, formFields } =
-    TeacherFormValidate({ isUpdateForm });
+    TeacherFormValidate({ isUpdateForm, id, state });
 
   return (
     <div>
