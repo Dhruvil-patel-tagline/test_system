@@ -9,9 +9,10 @@ import "./css/teacher.css";
 
 const CreateUpdateExamForm = () => {
   const loading = useSelector((state) => state.exams.loading);
+  const loading2 = useSelector((state) => state.editExam.loading);
   const { pathname, state } = useLocation();
-  let {id} = useParams();
- 
+  let { id } = useParams();
+
   const isUpdateForm = pathname.includes("updateExam");
   const { customValidation, handleSubmit, resetForm, examData, formFields } =
     TeacherFormValidate({ isUpdateForm, id, state });
@@ -19,9 +20,9 @@ const CreateUpdateExamForm = () => {
   return (
     <div>
       <div style={{ paddingTop: "20px" }}>
-        {loading && <Loader />}
+        {loading || (loading2 && <Loader />)}
         <h1 className="teacherFormHeading">
-          {isUpdateForm ? "Edit Exam" : "Create Exam"}
+          {isUpdateForm ? "Edit Exam" : "Create Exam"}  
         </h1>
         <div className="teacherFormInner">
           <DynamicForm

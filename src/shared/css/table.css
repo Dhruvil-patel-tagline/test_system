@@ -9,7 +9,7 @@ table {
   border-collapse: collapse;
 }
 
-.table-error-container{
+.table-error-container {
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -47,6 +47,6 @@ tr:hover {
   text-align: center;
   font-size: 18px;
   background: black;
-  color: blue;
+  color: red;
   padding: 20px;
 }
