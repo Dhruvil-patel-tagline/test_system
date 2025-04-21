@@ -1,7 +1,14 @@
 import { useId } from "react";
 import "./css/radio.css";
 
-const RadioCom = ({ text, name, value, onChange, checked }) => {
+const RadioCom = ({
+  text,
+  name,
+  value,
+  onChange,
+  checked,
+  disabled = false,
+}) => {
   const id = useId();
   return (
     <>
@@ -12,10 +19,18 @@ const RadioCom = ({ text, name, value, onChange, checked }) => {
           checked={checked}
           id={id}
           name={name}
+          disabled={disabled}
           onChange={onChange}
           value={value}
         />
-        <label htmlFor={id} style={{ marginLeft: "5px", cursor: "pointer" }}>
+        <label
+          htmlFor={id}
+          style={{
+            marginLeft: "5px",
+            cursor: "pointer",
+            color: disabled ? "gray" : "inherit",
+          }}
+        >
           {text}
         </label>
       </div>

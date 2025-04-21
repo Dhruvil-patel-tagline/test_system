@@ -1,5 +1,4 @@
 import { createBrowserRouter } from "react-router-dom";
-import Profile from "../../zzDummy/Profile";
 import ForgetPassword from "../components/auth/ForgetPassword";
 import Login from "../components/auth/Login";
 import NewPassword from "../components/auth/NewPassword";
@@ -8,6 +7,7 @@ import SignUp from "../components/auth/SignUp";
 import Dashboard from "../components/pages/Dashboard";
 import Home from "../components/pages/Home";
 import PageNotFound from "../components/pages/PageNotFound";
+import Profile from "../components/pages/Profile";
 import EditProfile from "../components/Student/EditProfile";
 import ExamForm from "../components/Student/ExamForm";
 import StudentResult from "../components/Student/StudentResult";

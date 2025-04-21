@@ -15,9 +15,7 @@ const StudentDashboard = () => {
   const token = getCookie("authToken");
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { exams, loading, error, pendingExam } = useSelector(
-    (state) => state.examList,
-  );
+  const { exams, loading, error, pendingExam } = useSelector( (state) => state.examList );
 
   const tableData = useMemo(() => {
     return exams.map((val, index) => ({
@@ -82,6 +80,4 @@ const StudentDashboard = () => {
   );
 };
 
-export default AuthRoute({ requireAuth: true, allowedRoles: ["student"] })(
-  StudentDashboard,
-);
+export default AuthRoute({ requireAuth: true, allowedRoles: ["student"] })( StudentDashboard );

@@ -273,30 +273,6 @@ const TeacherFormValidate = ({ isUpdateForm, id, state }) => {
       errorObj.subjectName = "Subject name is required";
     }
 
-    // const currentQuestion = questions[currentQ];
-
-    // if (!currentQuestion?.question?.trim()) {
-    //   errorObj.questionsError.questionError = "Question cannot be empty";
-    // } else if (isDuplicateQuestion(currentQ, currentQuestion.question)) {
-    //   errorObj.questionsError.questionError = "Duplicate question not allowed";
-    // }
-    // const hasEmptyOption = currentQuestion?.options?.some(
-    //   (opt) => !opt?.trim(),
-    // );
-    // if (hasEmptyOption) {
-    //   errorObj.questionsError.optionsError =
-    //     "4 options are required for each question";
-    // } else if (
-    //   currentQuestion?.options &&
-    //   !uniqueOpt(currentQuestion.options)
-    // ) {
-    //   errorObj.questionsError.optionsError = "Same option not allowed";
-    // }
-
-    // if (!currentQuestion?.answer?.trim()) {
-    //   errorObj.questionsError.answerError = "Answer is required";
-    // }
-
     if (!notes?.every((note) => note?.trim())) {
       errorObj.note0 = "Notes are required";
     } else if (notes[0]?.trim() === notes[1]?.trim()) {
@@ -307,8 +283,6 @@ const TeacherFormValidate = ({ isUpdateForm, id, state }) => {
       type: "SET_ERROR",
       payload: { error: errorObj },
     });
-
-    dispatch({ type: "SET_ERROR", payload: errorObj });
 
     return (
       result.every((val) => val) && !errorObj.note0 && !errorObj.subjectName
@@ -408,6 +382,7 @@ const TeacherFormValidate = ({ isUpdateForm, id, state }) => {
       {
         id: `answer-${currentQ}`,
         type: "radio",
+        disabled: errors.questionsError?.optionsError,
         name: "Answer",
         noLabel: true,
         input: "radio",
@@ -430,7 +405,9 @@ const TeacherFormValidate = ({ isUpdateForm, id, state }) => {
         onClick: () => {
           handleQuestionSave(currentQ, "previous");
         },
-        disabled: currentQ === 0,
+        disabled:
+          currentQ === 0 ||
+          Object.values(errors?.questionsError).some((val) => val),
       },
       {
         type: "button",
@@ -438,7 +415,9 @@ const TeacherFormValidate = ({ isUpdateForm, id, state }) => {
         onClick: () => {
           handleQuestionSave(currentQ, "next");
         },
-        disabled: currentQ === TOTAL_QUESTIONS - 1,
+        disabled:
+          currentQ === TOTAL_QUESTIONS - 1 ||
+          Object.values(errors?.questionsError).some((val) => val),
         name: "Next",
         input: "button",
         id: "next",

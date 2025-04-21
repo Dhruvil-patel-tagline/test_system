@@ -20,9 +20,9 @@ const CreateUpdateExamForm = () => {
   return (
     <div>
       <div style={{ paddingTop: "20px" }}>
-        {loading || (loading2 && <Loader />)}
+        {(loading || loading2) && <Loader />}
         <h1 className="teacherFormHeading">
-          {isUpdateForm ? "Edit Exam" : "Create Exam"}  
+          {isUpdateForm ? "Edit Exam" : "Create Exam"}
         </h1>
         <div className="teacherFormInner">
           <DynamicForm

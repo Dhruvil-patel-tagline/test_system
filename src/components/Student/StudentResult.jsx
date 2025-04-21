@@ -34,8 +34,7 @@ const StudentResult = () => {
     if (state?.Result?.[0]?.rank === 1 && state?.Result?.[0].score > 3) {
       toast.success("🎉 Congratulations! You've achieved the top rank.");
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [state?.Result]);
 
   return (
     <div className="studentResultContainer">

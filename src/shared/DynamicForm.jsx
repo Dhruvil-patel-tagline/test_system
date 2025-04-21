@@ -80,7 +80,7 @@ const DynamicForm = ({
         return (
           <div className={`form-field ${field.className}`}>
             {field.options.map((opt, index) => {
-              const radioId = `${field.id}-${opt}`;
+              const radioId = `${field.id}-${opt}-${index}`;
               const isChecked =
                 field.value === opt || formData[field.id] === opt;
               return (
@@ -89,6 +89,7 @@ const DynamicForm = ({
                   className="radio-option"
                 >
                   <RadioCom
+                    disabled={field?.disabled}
                     id={radioId}
                     text={opt}
                     name={field.id}
